@@ -242,7 +242,7 @@ public class DefaultMessageHolder
 
         private final MessageSink onDemandSink;
 
-        public Message( int messageLevel, MessageSink onDemandSink )
+        Message( int messageLevel, MessageSink onDemandSink )
         {
             this.messageLevel = messageLevel;
 
