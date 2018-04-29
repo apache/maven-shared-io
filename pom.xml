@@ -33,10 +33,6 @@
   <name>Apache Maven Shared I/O API</name>
   <description>API for I/O support like logging, download or file scanning.</description>
 
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
-
   <contributors>
     <contributor>
       <name>Joakim Erdfelt</name>
