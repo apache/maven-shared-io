@@ -22,7 +22,7 @@ package org.apache.maven.shared.io.logging;
 import org.codehaus.plexus.logging.Logger;
 
 /**
- * The plexus logger sing implementation.
+ * The plexus logger sink implementation.
  */
 public class PlexusLoggerSink
     implements MessageSink
