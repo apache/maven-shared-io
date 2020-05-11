@@ -46,7 +46,7 @@ import org.apache.maven.wagon.repository.Repository;
  *
  */
 public class DefaultDownloadManager
-    implements DownloadManager
+        implements DownloadManager
 {
 
     /**
@@ -75,14 +75,14 @@ public class DefaultDownloadManager
 
     /** {@inheritDoc} */
     public File download( String url, MessageHolder messageHolder )
-        throws DownloadFailedException
+            throws DownloadFailedException
     {
         return download( url, Collections.<TransferListener>emptyList(), messageHolder );
     }
 
     /** {@inheritDoc} */
     public File download( String url, List<TransferListener> transferListeners, MessageHolder messageHolder )
-        throws DownloadFailedException
+            throws DownloadFailedException
     {
         File downloaded = (File) cache.get( url );
 
