@@ -82,7 +82,8 @@ public final class Utils
     }
 
     /**
-     * reads content from a file and normalize EOLs to simple line feed (\\n), using platform encoding.
+     * Reads content from a file and normalizes EOLs to simple line feed (\\n), using platform encoding.
+     * 
      * @deprecated this API isn't explicit about encoding nor EOL normalization, use readPlatformFile() or
      * readXmlFile() depending on your need, in conjunction with normalizeEndOfLine()
      */
@@ -95,22 +96,20 @@ public final class Utils
     {
         StringWriter buffer = new StringWriter();
 
-        Reader reader = ReaderFactory.newPlatformReader( file );
-
-        IOUtil.copy( reader, buffer );
-
-        return buffer.toString();
+        try ( Reader reader = ReaderFactory.newPlatformReader( file ) ) {
+            IOUtil.copy( reader, buffer );  
+            return buffer.toString();
+        }
     }
 
     public static String readXmlFile( File file ) throws IOException
     {
         StringWriter buffer = new StringWriter();
 
-        Reader reader = ReaderFactory.newXmlReader( file );
-
-        IOUtil.copy( reader, buffer );
-
-        return buffer.toString();
+        try ( Reader reader = ReaderFactory.newXmlReader( file ) ) {
+            IOUtil.copy( reader, buffer );  
+            return buffer.toString();
+        }
     }
 
     /**
@@ -120,11 +119,11 @@ public final class Utils
     {
         StringBuffer buffer = new StringBuffer();
 
-        BufferedReader reader = new BufferedReader( new StringReader( content ) );
 
         String line = null;
 
-        try {
+        try ( BufferedReader reader = new BufferedReader( new StringReader( content ) ) )
+        {
             while( ( line = reader.readLine() ) != null )
             {
                 if ( buffer.length() > 0 )

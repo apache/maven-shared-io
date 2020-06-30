@@ -77,11 +77,12 @@ public class FileLocationTest
 
         location.open();
 
-        InputStream stream = location.getInputStream();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtil.copy( stream, out );
-
-        assertEquals( testStr, new String(out.toByteArray(), "US-ASCII" ) );
+        try ( InputStream stream = location.getInputStream() ) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            IOUtil.copy( stream, out );
+    
+            assertEquals( testStr, new String(out.toByteArray(), "US-ASCII" ) );
+        }
     }
 
     public void testShouldReadFileContentsUsingByteArray() throws IOException
