@@ -63,7 +63,6 @@
 
   <properties>
     <mavenVersion>3.0</mavenVersion>
-    <surefire.version>2.21.0</surefire.version>
     <javaVersion>7</javaVersion>
     <checkstyle.violation.ignore>RedundantThrows,NewlineAtEndOfFile,ParameterNumber,MethodLength,FileLength,JavadocType</checkstyle.violation.ignore>
     <project.build.outputTimestamp>2020-04-04T09:03:59Z</project.build.outputTimestamp>
