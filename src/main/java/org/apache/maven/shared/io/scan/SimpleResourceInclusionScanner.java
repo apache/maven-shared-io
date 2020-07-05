@@ -21,6 +21,7 @@ package org.apache.maven.shared.io.scan;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -59,6 +60,13 @@ public class SimpleResourceInclusionScanner
             return Collections.<String>emptySet();
         }
 
-        return Collections.singleton( scanForSources( sourceDir, sourceIncludes, sourceExcludes ) );
+        Set<File> matchingSources = new HashSet<File>();
+        String[] sourcePaths = scanForSources( sourceDir, sourceIncludes, sourceExcludes );
+
+        for ( int i = 0; i < sourcePaths.length; i++ )
+        {
+            matchingSources.add( new File( sourceDir, sourcePaths[i] ) );
+        }
+        return matchingSources;
     }
 }
