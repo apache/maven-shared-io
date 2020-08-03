@@ -31,8 +31,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.artifact.manager.WagonManager;
-import org.apache.maven.shared.io.Utils;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
 import org.apache.maven.wagon.ConnectionException;
@@ -117,7 +117,7 @@ public class DefaultDownloadManagerTest
 
         DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
 
-        downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+        downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
         verify( wagon, wagonManager );
     }
@@ -134,11 +134,11 @@ public class DefaultDownloadManagerTest
 
         DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
 
-        File first = downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+        File first = downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        File second = downloadManager.download( tempFile.toURL().toExternalForm(), mh );
+        File second = downloadManager.download( tempFile.toURI().toASCIIString(), mh );
 
         assertSame( first, second );
         assertEquals( 1, mh.size() );
@@ -165,7 +165,7 @@ public class DefaultDownloadManagerTest
 
         DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
 
-        downloadManager.download( tempFile.toURL().toExternalForm(), Collections.singletonList( transferListener ),
+        downloadManager.download( tempFile.toURI().toASCIIString(), Collections.singletonList( transferListener ),
                                   new DefaultMessageHolder() );
 
         verify( wagon, wagonManager, transferListener );
@@ -185,13 +185,13 @@ public class DefaultDownloadManagerTest
 
         try
         {
-            downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
             fail( "should have failed to retrieve wagon." );
         }
         catch ( DownloadFailedException e )
         {
-            assertTrue( Utils.toString( e ).indexOf( "UnsupportedProtocolException" ) > -1 );
+            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "UnsupportedProtocolException" ) > -1 );
         }
 
         verify( wagon, wagonManager );
@@ -211,13 +211,13 @@ public class DefaultDownloadManagerTest
 
         try
         {
-            downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
             fail( "should have failed to connect wagon." );
         }
         catch ( DownloadFailedException e )
         {
-            assertTrue( Utils.toString( e ).indexOf( "ConnectionException" ) > -1 );
+            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "ConnectionException" ) > -1 );
         }
 
         verify( wagon, wagonManager );
@@ -237,13 +237,13 @@ public class DefaultDownloadManagerTest
 
         try
         {
-            downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
             fail( "should have failed to connect wagon." );
         }
         catch ( DownloadFailedException e )
         {
-            assertTrue( Utils.toString( e ).indexOf( "AuthenticationException" ) > -1 );
+            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "AuthenticationException" ) > -1 );
         }
 
         verify( wagon, wagonManager );
@@ -263,13 +263,13 @@ public class DefaultDownloadManagerTest
 
         try
         {
-            downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
             fail( "should have failed to get resource." );
         }
         catch ( DownloadFailedException e )
         {
-            assertTrue( Utils.toString( e ).indexOf( "TransferFailedException" ) > -1 );
+            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "TransferFailedException" ) > -1 );
         }
 
         verify( wagon, wagonManager );
@@ -289,13 +289,13 @@ public class DefaultDownloadManagerTest
 
         try
         {
-            downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
             fail( "should have failed to get resource." );
         }
         catch ( DownloadFailedException e )
         {
-            assertTrue( Utils.toString( e ).indexOf( "ResourceDoesNotExistException" ) > -1 );
+            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "ResourceDoesNotExistException" ) > -1 );
         }
 
         verify( wagon, wagonManager );
@@ -315,13 +315,13 @@ public class DefaultDownloadManagerTest
 
         try
         {
-            downloadManager.download( tempFile.toURL().toExternalForm(), new DefaultMessageHolder() );
+            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
 
             fail( "should have failed to get resource." );
         }
         catch ( DownloadFailedException e )
         {
-            assertTrue( Utils.toString( e ).indexOf( "AuthorizationException" ) > -1 );
+            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "AuthorizationException" ) > -1 );
         }
 
         verify( wagon, wagonManager );
@@ -341,7 +341,7 @@ public class DefaultDownloadManagerTest
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        downloadManager.download( tempFile.toURL().toExternalForm(), mh );
+        downloadManager.download( tempFile.toURI().toASCIIString(), mh );
 
         assertTrue( mh.render().indexOf( "ConnectionException" ) > -1 );
 
