@@ -27,6 +27,7 @@ import java.io.Writer;
 
 import org.apache.maven.shared.utils.WriterFactory;
 
+@Deprecated
 public final class Utils
 {
 
@@ -34,6 +35,10 @@ public final class Utils
     {
     }
 
+    /**
+     * deprecated use Apache Commons IO {@code FileUtils.writeStringToFile} instead
+     */
+    @Deprecated
     public static void writeFileWithEncoding( File file, String content, String encoding )
         throws IOException
     {
@@ -43,6 +48,11 @@ public final class Utils
         }
     }
 
+    /**
+     * deprecated use Apache Commons Lang
+     *     {@code org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(Throwable)} instead
+     */
+    @Deprecated
     public static String toString( Throwable error )
     {
         StringWriter sw = new StringWriter();
