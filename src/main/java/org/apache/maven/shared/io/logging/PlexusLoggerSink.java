@@ -23,7 +23,10 @@ import org.codehaus.plexus.logging.Logger;
 
 /**
  * The plexus logger sink implementation.
+ * 
+ * @deprecated Plexus logging should no longer be used in Maven. Convert to SLF4J.
  */
+@Deprecated
 public class PlexusLoggerSink
     implements MessageSink
 {
