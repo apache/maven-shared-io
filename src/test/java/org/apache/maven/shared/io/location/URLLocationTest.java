@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.apache.maven.shared.io.Utils;
+import org.apache.commons.io.FileUtils;
 
 import junit.framework.TestCase;
 
@@ -61,7 +61,7 @@ public class URLLocationTest
 
         String testStr = "This is a test";
 
-        Utils.writeFileWithEncoding( f, testStr, "US-ASCII" );
+        FileUtils.writeStringToFile(f, testStr, "US-ASCII");
 
         URL url = f.toURL();
 

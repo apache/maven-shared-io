@@ -42,7 +42,6 @@ public class SuffixMappingTest
 
         File basedir = new File( "." );
 
-        System.out.println( "basedir:" + basedir.getAbsolutePath() );
         SuffixMapping mapping = new SuffixMapping( ".java", ".class" );
 
         Set<File> results = mapping.getTargetFiles( basedir, base + ".java" );

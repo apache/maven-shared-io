@@ -1,5 +1,7 @@
 package org.apache.maven.shared.io.location;
 
+import org.apache.commons.io.FileUtils;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,7 +21,6 @@ package org.apache.maven.shared.io.location;
  * under the License.
  */
 
-import org.apache.maven.shared.io.Utils;
 import org.apache.maven.shared.utils.io.IOUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -52,7 +53,7 @@ public class FileLocationTest
 
         String testStr = "This is a test";
 
-        Utils.writeFileWithEncoding( file, testStr, "US-ASCII" );
+        FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
         FileLocation location = new FileLocation( file, file.getAbsolutePath() );
 
@@ -71,7 +72,7 @@ public class FileLocationTest
 
         String testStr = "This is a test";
 
-        Utils.writeFileWithEncoding( file, testStr, "US-ASCII" );
+        FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
         FileLocation location = new FileLocation( file, file.getAbsolutePath() );
 
@@ -92,7 +93,7 @@ public class FileLocationTest
 
         String testStr = "This is a test";
 
-        Utils.writeFileWithEncoding( file, testStr, "US-ASCII" );
+        FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
         FileLocation location = new FileLocation( file, file.getAbsolutePath() );
 
@@ -111,7 +112,7 @@ public class FileLocationTest
 
         String testStr = "This is a test";
 
-        Utils.writeFileWithEncoding( file, testStr, "US-ASCII" );
+        FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
         FileLocation location = new FileLocation( file, file.getAbsolutePath() );
 
