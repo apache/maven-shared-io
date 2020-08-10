@@ -24,11 +24,11 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.shared.io.Utils;
 
 public class ArtifactLocationTest
     extends TestCase
@@ -58,7 +58,7 @@ public class ArtifactLocationTest
 
         String testStr = "This is a test";
 
-        Utils.writeFileWithEncoding( f, testStr, "US-ASCII" );
+        FileUtils.writeStringToFile( f, testStr, "US-ASCII" );
 
         Artifact a = new DefaultArtifact( "group", "artifact", VersionRange.createFromVersion( "1" ), null, "jar",
                                           null, new DefaultArtifactHandler() );
