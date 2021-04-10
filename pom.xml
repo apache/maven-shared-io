@@ -24,11 +24,11 @@
     <groupId>org.apache.maven.shared</groupId>
     <artifactId>maven-shared-components</artifactId>
     <version>34</version>
-    <relativePath>../../pom/maven/maven-shared-components/pom.xml</relativePath>
+    <relativePath/>
   </parent>
 
   <artifactId>maven-shared-io</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.1.0-SNAPSHOT</version>
 
   <name>Apache Maven Shared I/O API</name>
   <description>API for I/O support like logging, download or file scanning.</description>
@@ -48,7 +48,7 @@
   </scm>
   <issueManagement>
     <system>jira</system>
-    <url>https://issues.apache.org/jira/browse/MSHARED/component/12326440</url>
+    <url>https://issues.apache.org/jira/projects/MSHARED</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
