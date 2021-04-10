@@ -34,9 +34,9 @@ import org.apache.maven.shared.io.scan.mapping.SourceMapping;
 public class SimpleResourceInclusionScanner
     extends AbstractResourceInclusionScanner
 {
-    private Set<String> sourceIncludes;
+    private final Set<String> sourceIncludes;
 
-    private Set<String> sourceExcludes;
+    private final Set<String> sourceExcludes;
 
     /**
      * @param sourceIncludes The source includes.
@@ -50,14 +50,14 @@ public class SimpleResourceInclusionScanner
     }
 
     /** {@inheritDoc} */
-    public Set getIncludedSources( File sourceDir, File targetDir )
+    public Set<File> getIncludedSources( File sourceDir, File targetDir )
         throws InclusionScanException
     {
         List<SourceMapping> srcMappings = getSourceMappings();
 
         if ( srcMappings.isEmpty() )
         {
-            return Collections.<File>emptySet();
+            return Collections.emptySet();
         }
 
         Set<File> matchingSources = new HashSet<>();
