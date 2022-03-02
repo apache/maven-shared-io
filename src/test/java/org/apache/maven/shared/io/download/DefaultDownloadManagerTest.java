@@ -46,6 +46,8 @@ import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusTestCase;
 
 public class DefaultDownloadManagerTest
@@ -63,6 +65,11 @@ public class DefaultDownloadManagerTest
 
         wagonManager = createMock( WagonManager.class );
         wagon = createMock( Wagon.class );
+    }
+
+    protected void customizeContainerConfiguration( ContainerConfiguration configuration )
+    {
+        configuration.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
     }
 
     public void testShouldConstructWithNoParamsAndHaveNonNullMessageHolder()
