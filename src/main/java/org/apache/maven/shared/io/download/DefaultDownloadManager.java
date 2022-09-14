@@ -100,7 +100,7 @@ public class DefaultDownloadManager
         }
         catch ( MalformedURLException e )
         {
-            throw new DownloadFailedException( url, "Download failed due to invalid URL. Reason: " + e.getMessage(),
+            throw new DownloadFailedException( url, "Download failed due to invalid URL.",
                                                e );
         }
 
@@ -113,7 +113,7 @@ public class DefaultDownloadManager
         }
         catch ( UnsupportedProtocolException e )
         {
-            throw new DownloadFailedException( url, "Download failed. ", e );
+            throw new DownloadFailedException( url, "Download failed.", e );
         }
 
         messageHolder.addMessage( "Using wagon: " + wagon + " to download: " + url );
@@ -128,7 +128,7 @@ public class DefaultDownloadManager
         }
         catch ( IOException e )
         {
-            throw new DownloadFailedException( url, "Failed to create temporary file target for download. ", e );
+            throw new DownloadFailedException( url, "Failed to create temporary file target for download.", e );
         }
 
         messageHolder.addMessage( "Download target is: " + downloaded.getAbsolutePath() );
@@ -155,11 +155,11 @@ public class DefaultDownloadManager
         }
         catch ( ConnectionException e )
         {
-            throw new DownloadFailedException( url, "Download failed. ", e );
+            throw new DownloadFailedException( url, "Download failed.", e );
         }
         catch ( AuthenticationException e )
         {
-            throw new DownloadFailedException( url, "Download failed. ", e );
+            throw new DownloadFailedException( url, "Download failed.", e );
         }
 
         messageHolder.addMessage( "Getting: " + remotePath );
@@ -175,15 +175,15 @@ public class DefaultDownloadManager
         }
         catch ( TransferFailedException e )
         {
-            throw new DownloadFailedException( url, "Download failed. ", e );
+            throw new DownloadFailedException( url, "Download failed.", e );
         }
         catch ( ResourceDoesNotExistException e )
         {
-            throw new DownloadFailedException( url, "Download failed. ", e );
+            throw new DownloadFailedException( url, "Download failed.", e );
         }
         catch ( AuthorizationException e )
         {
-            throw new DownloadFailedException( url, "Download failed. ", e );
+            throw new DownloadFailedException( url, "Download failed.", e );
         }
         finally
         {
