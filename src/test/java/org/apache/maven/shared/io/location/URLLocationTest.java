@@ -22,6 +22,7 @@ package org.apache.maven.shared.io.location;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 
@@ -33,7 +34,7 @@ public class URLLocationTest
 
     public void testShouldConstructFromUrlAndTempFileSpecifications() throws IOException
     {
-        File f = File.createTempFile( "url-location.", ".test" );
+        File f = Files.createTempFile( "url-location.", ".test" ).toFile();
         f.deleteOnExit();
 
         URL url = f.toURL();
@@ -43,7 +44,7 @@ public class URLLocationTest
 
     public void testShouldTransferFromTempFile() throws IOException
     {
-        File f = File.createTempFile( "url-location.", ".test" );
+        File f = Files.createTempFile( "url-location.", ".test" ).toFile();
         f.deleteOnExit();
 
         URL url = f.toURL();
@@ -56,7 +57,7 @@ public class URLLocationTest
 
     public void testShouldTransferFromTempFileThenRead() throws IOException
     {
-        File f = File.createTempFile( "url-location.", ".test" );
+        File f = Files.createTempFile( "url-location.", ".test" ).toFile();
         f.deleteOnExit();
 
         String testStr = "This is a test";

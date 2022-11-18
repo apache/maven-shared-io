@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class SimpleResourceInclusionScannerTest {
         File baseDir = new File("target" );
         baseDir.deleteOnExit();
         baseDir.mkdirs();
-        File f = File.createTempFile( "source1.", ".test", baseDir );
+        File f = Files.createTempFile( baseDir.toPath(), "source1.", ".test" ).toFile();
 
         Set<String> sourceIncludes = new HashSet<>();
         sourceIncludes.add( "**/*" + f.getName() );

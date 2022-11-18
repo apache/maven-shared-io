@@ -21,6 +21,7 @@ package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
@@ -54,7 +55,7 @@ public class URLLocatorStrategyTest
 
     public void testShouldResolveUrlForTempFile() throws IOException
     {
-        File tempFile = File.createTempFile( "prefix.", ".suffix" );
+        File tempFile = Files.createTempFile( "prefix.", ".suffix" ).toFile();
         tempFile.deleteOnExit();
 
         String testStr = "This is a test.";

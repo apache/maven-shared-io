@@ -21,6 +21,7 @@ package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
@@ -37,7 +38,7 @@ public class ArtifactLocationTest
     public void testShouldConstructFromTempFileSpecification()
         throws IOException
     {
-        File f = File.createTempFile( "artifact-location.", ".test" );
+        File f = Files.createTempFile( "artifact-location.", ".test" ).toFile();
         f.deleteOnExit();
 
         Artifact a = new DefaultArtifact( "group", "artifact", VersionRange.createFromVersion( "1" ), null, "jar",
@@ -53,7 +54,7 @@ public class ArtifactLocationTest
     public void testShouldRead()
         throws IOException
     {
-        File f = File.createTempFile( "url-location.", ".test" );
+        File f = Files.createTempFile( "url-location.", ".test" ).toFile();
         f.deleteOnExit();
 
         String testStr = "This is a test";

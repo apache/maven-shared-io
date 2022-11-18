@@ -21,6 +21,7 @@ package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 
 import junit.framework.TestCase;
@@ -106,7 +107,7 @@ public class ArtifactLocatorStrategyTest
     public void testShouldResolveSpecWithThreeTokensUsingDefaultType()
         throws IOException
     {
-        File tempFile = File.createTempFile( "artifact-location.", ".temp" );
+        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
         tempFile.deleteOnExit();
 
         Artifact artifact = createMock( Artifact.class );
@@ -150,7 +151,7 @@ public class ArtifactLocatorStrategyTest
     public void testShouldResolveSpecWithThreeTokensUsingCustomizedDefaultType()
         throws IOException
     {
-        File tempFile = File.createTempFile( "artifact-location.", ".temp" );
+        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
         tempFile.deleteOnExit();
 
         Artifact artifact = createMock( Artifact.class );
@@ -194,7 +195,7 @@ public class ArtifactLocatorStrategyTest
     public void testShouldResolveSpecWithFourTokens()
         throws IOException
     {
-        File tempFile = File.createTempFile( "artifact-location.", ".temp" );
+        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
         tempFile.deleteOnExit();
 
         Artifact artifact = createMock( Artifact.class );
@@ -238,7 +239,7 @@ public class ArtifactLocatorStrategyTest
     public void testShouldResolveSpecWithFiveTokens()
         throws IOException
     {
-        File tempFile = File.createTempFile( "artifact-location.", ".temp" );
+        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
         tempFile.deleteOnExit();
 
         Artifact artifact = createMock( Artifact.class );
@@ -283,7 +284,7 @@ public class ArtifactLocatorStrategyTest
     public void testShouldResolveSpecWithFiveTokensAndEmptyTypeToken()
         throws IOException
     {
-        File tempFile = File.createTempFile( "artifact-location.", ".temp" );
+        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
         tempFile.deleteOnExit();
 
         Artifact artifact = createMock( Artifact.class );
@@ -328,7 +329,7 @@ public class ArtifactLocatorStrategyTest
     public void testShouldResolveSpecWithMoreThanFiveTokens()
         throws IOException
     {
-        File tempFile = File.createTempFile( "artifact-location.", ".temp" );
+        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
         tempFile.deleteOnExit();
 
         Artifact artifact = createMock( Artifact.class );

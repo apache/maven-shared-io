@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -121,7 +122,7 @@ public class DefaultDownloadManager
         try
         {
             // create the landing file in /tmp for the downloaded source archive
-            downloaded = File.createTempFile( "download-", null );
+            downloaded = Files.createTempFile( "download-", null ).toFile();
 
             // delete when the JVM exits, to avoid polluting the temp dir...
             downloaded.deleteOnExit();
