@@ -21,16 +21,14 @@ import org.apache.commons.io.FileUtils;
  * under the License.
  */
 
-import org.apache.maven.shared.utils.io.IOUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
-
 import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
 
 public class FileLocationTest
     extends TestCase
@@ -81,7 +79,7 @@ public class FileLocationTest
 
         try ( InputStream stream = location.getInputStream() ) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            IOUtil.copy( stream, out );
+            IOUtils.copy( stream, out );
     
             assertEquals( testStr, new String(out.toByteArray(), "US-ASCII" ) );
         }
