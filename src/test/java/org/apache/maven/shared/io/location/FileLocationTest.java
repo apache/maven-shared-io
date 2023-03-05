@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 
 import junit.framework.TestCase;
 
@@ -37,7 +38,7 @@ public class FileLocationTest
 
     public void testShouldConstructWithFileThenRetrieveSameFile() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         FileLocation location = new FileLocation( file, file.getAbsolutePath() );
@@ -48,7 +49,7 @@ public class FileLocationTest
 
     public void testShouldReadFileContentsUsingByteBuffer() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
@@ -67,7 +68,7 @@ public class FileLocationTest
 
     public void testShouldReadFileContentsUsingStream() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
@@ -88,7 +89,7 @@ public class FileLocationTest
 
     public void testShouldReadFileContentsUsingByteArray() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
@@ -107,7 +108,7 @@ public class FileLocationTest
 
     public void testShouldReadThenClose() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
@@ -128,7 +129,7 @@ public class FileLocationTest
 
     public void testShouldOpenThenFailToSetFile() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         TestFileLocation location = new TestFileLocation( file.getAbsolutePath() );
@@ -148,7 +149,7 @@ public class FileLocationTest
 
     public void testShouldConstructWithoutFileThenSetFileThenOpen() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         TestFileLocation location = new TestFileLocation( file.getAbsolutePath() );
@@ -159,7 +160,7 @@ public class FileLocationTest
 
     public void testShouldConstructWithLocationThenRetrieveEquivalentFile() throws IOException
     {
-        File file = File.createTempFile( "test.", ".file-location" );
+        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
         file.deleteOnExit();
 
         Location location = new TestFileLocation( file.getAbsolutePath() );

@@ -29,6 +29,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collections;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -108,7 +109,7 @@ public class DefaultDownloadManagerTest
     public void testShouldDownloadFromTempFileWithNoTransferListeners()
         throws IOException, DownloadFailedException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
@@ -125,7 +126,7 @@ public class DefaultDownloadManagerTest
     public void testShouldDownloadFromTempFileTwiceAndUseCache()
         throws IOException, DownloadFailedException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
@@ -150,7 +151,7 @@ public class DefaultDownloadManagerTest
     public void testShouldDownloadFromTempFileWithOneTransferListener()
         throws IOException, DownloadFailedException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
@@ -174,7 +175,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonProtocolNotFound()
         throws IOException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonManagerGetException( new UnsupportedProtocolException( "not supported" ) );
@@ -200,7 +201,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonConnectThrowsConnectionException()
         throws IOException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonConnectionException( new ConnectionException( "connect error" ) );
@@ -226,7 +227,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonConnectThrowsAuthenticationException()
         throws IOException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonConnectionException( new AuthenticationException( "bad credentials" ) );
@@ -252,7 +253,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonGetThrowsTransferFailedException()
         throws IOException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonGetException( new TransferFailedException( "bad transfer" ) );
@@ -278,7 +279,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonGetThrowsResourceDoesNotExistException()
         throws IOException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonGetException( new ResourceDoesNotExistException( "bad resource" ) );
@@ -304,7 +305,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonGetThrowsAuthorizationException()
         throws IOException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonGetException( new AuthorizationException( "bad transfer" ) );
@@ -330,7 +331,7 @@ public class DefaultDownloadManagerTest
     public void testShouldFailToDownloadWhenWagonDisconnectThrowsConnectionException()
         throws IOException, DownloadFailedException
     {
-        File tempFile = File.createTempFile( "download-source", "test" );
+        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
         tempFile.deleteOnExit();
 
         setupMocksWithWagonDisconnectException( new ConnectionException( "not connected" ) );
