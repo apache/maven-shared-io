@@ -21,6 +21,7 @@ package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
@@ -33,7 +34,7 @@ public class FileLocatorStrategyTest
 
     public void testShouldResolveExistingTempFileLocation() throws IOException
     {
-        File f = File.createTempFile( "file-locator.", ".test" );
+        File f = Files.createTempFile( "file-locator.", ".test" ).toFile();
         f.deleteOnExit();
 
         FileLocatorStrategy fls = new FileLocatorStrategy();
@@ -51,7 +52,7 @@ public class FileLocatorStrategyTest
 
     public void testShouldFailToResolveNonExistentFileLocation() throws IOException
     {
-        File f = File.createTempFile( "file-locator.", ".test" );
+        File f = Files.createTempFile( "file-locator.", ".test" ).toFile();
         f.delete();
 
         FileLocatorStrategy fls = new FileLocatorStrategy();
