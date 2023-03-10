@@ -24,11 +24,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 
-import org.apache.maven.shared.utils.io.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 /**
  * The URL Location.
- *
  */
 public class URLLocation
     extends FileLocation
@@ -43,11 +42,11 @@ public class URLLocation
     private final boolean tempFileDeleteOnExit;
 
     /**
-     * @param url The URL.
-     * @param specification The spec.
-     * @param tempFilePrefix the prefix.
-     * @param tempFileSuffix The suffix.
-     * @param tempFileDeleteOnExit delete on exit.
+     * @param url the URL
+     * @param specification the spec
+     * @param tempFilePrefix the prefix
+     * @param tempFileSuffix the suffix
+     * @param tempFileDeleteOnExit delete on exit
      */
     public URLLocation( URL url, String specification, String tempFilePrefix, String tempFileSuffix,
                         boolean tempFileDeleteOnExit )
@@ -64,7 +63,6 @@ public class URLLocation
     protected void initFile()
         throws IOException
     {
-        // TODO: Log this in the debug log-level...
         if ( unsafeGetFile() == null )
         {
             File tempFile = Files.createTempFile( tempFilePrefix, tempFileSuffix ).toFile();
