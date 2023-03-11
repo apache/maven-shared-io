@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.scan;
 
-
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;

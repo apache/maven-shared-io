@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.location;
 
-
 import org.apache.maven.artifact.Artifact;
 
 /**

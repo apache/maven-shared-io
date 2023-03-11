@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.logging;
 
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 

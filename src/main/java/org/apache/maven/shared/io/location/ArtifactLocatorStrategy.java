@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.location;
 
-
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;

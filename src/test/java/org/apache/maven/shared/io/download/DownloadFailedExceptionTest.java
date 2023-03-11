@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.download;
 
-
 import junit.framework.TestCase;
 
 public class DownloadFailedExceptionTest extends TestCase {

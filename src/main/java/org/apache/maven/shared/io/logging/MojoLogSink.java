@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.logging;
 
-
 import org.apache.maven.plugin.logging.Log;
 
 /**

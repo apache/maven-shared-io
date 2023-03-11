@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.download;
 
-
 import java.io.File;
 import java.util.List;
 

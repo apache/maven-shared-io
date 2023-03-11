@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.download;
 
-
 /**
  * The Download Failed Exception.
  */

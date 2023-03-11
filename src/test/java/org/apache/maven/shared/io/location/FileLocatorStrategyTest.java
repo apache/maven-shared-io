@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.location;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

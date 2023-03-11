@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.scan;
 
-
 /**
  * @author jdcasey
  * @version $Id$

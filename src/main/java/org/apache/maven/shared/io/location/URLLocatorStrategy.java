@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.location;
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 

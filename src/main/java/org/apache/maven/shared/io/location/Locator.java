@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.location;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

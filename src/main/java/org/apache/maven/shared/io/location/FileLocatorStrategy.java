@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.location;
 
-
 import java.io.File;
 
 import org.apache.maven.shared.io.logging.MessageHolder;

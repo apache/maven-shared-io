@@ -18,7 +18,6 @@
  */
 package org.apache.maven.shared.io.logging;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
