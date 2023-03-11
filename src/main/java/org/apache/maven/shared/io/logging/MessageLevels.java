@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.maven.shared.io.logging;
 
 /*
@@ -25,10 +43,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
+ *
  */
-public final class MessageLevels
-{
+public final class MessageLevels {
 
     /**
      * Debug.
@@ -57,43 +74,38 @@ public final class MessageLevels
 
     private static final List<String> LEVEL_NAMES;
 
-    static
-    {
+    static {
         List<String> names = new ArrayList<String>();
-        names.add( "DEBUG" );
-        names.add( "INFO" );
-        names.add( "WARN" );
-        names.add( "ERROR" );
-        names.add( "SEVERE" );
+        names.add("DEBUG");
+        names.add("INFO");
+        names.add("WARN");
+        names.add("ERROR");
+        names.add("SEVERE");
 
-        LEVEL_NAMES = Collections.unmodifiableList( names );
+        LEVEL_NAMES = Collections.unmodifiableList(names);
     }
 
-    private MessageLevels()
-    {
-    }
+    private MessageLevels() {}
 
     /**
      * @param maxMessageLevel for which level.
      * @return level states.
      */
-    public static boolean[] getLevelStates( int maxMessageLevel )
-    {
+    public static boolean[] getLevelStates(int maxMessageLevel) {
         boolean[] states = new boolean[5];
 
-        Arrays.fill( states, false );
+        Arrays.fill(states, false);
 
-        switch ( maxMessageLevel )
-        {
-            case ( LEVEL_DEBUG ):
+        switch (maxMessageLevel) {
+            case (LEVEL_DEBUG):
                 states[LEVEL_DEBUG] = true;
-            case ( LEVEL_INFO ):
+            case (LEVEL_INFO):
                 states[LEVEL_INFO] = true;
-            case ( LEVEL_WARNING ):
+            case (LEVEL_WARNING):
                 states[LEVEL_WARNING] = true;
-            case ( LEVEL_ERROR ):
+            case (LEVEL_ERROR):
                 states[LEVEL_ERROR] = true;
-            case ( LEVEL_SEVERE ):
+            case (LEVEL_SEVERE):
                 states[LEVEL_SEVERE] = true;
             default:
         }
@@ -105,13 +117,11 @@ public final class MessageLevels
      * @param messageLevel the message leve.
      * @return The label.
      */
-    public static String getLevelLabel( int messageLevel )
-    {
-        if ( messageLevel > -1 && LEVEL_NAMES.size() > messageLevel )
-        {
-            return (String) LEVEL_NAMES.get( messageLevel );
+    public static String getLevelLabel(int messageLevel) {
+        if (messageLevel > -1 && LEVEL_NAMES.size() > messageLevel) {
+            return (String) LEVEL_NAMES.get(messageLevel);
         }
 
-        throw new IllegalArgumentException( "Invalid message level: " + messageLevel );
+        throw new IllegalArgumentException("Invalid message level: " + messageLevel);
     }
 }

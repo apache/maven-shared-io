@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.maven.shared.io.logging;
 
 /*
@@ -23,8 +41,7 @@ package org.apache.maven.shared.io.logging;
  * Message Holder class.
  *
  */
-public interface MessageHolder
-{
+public interface MessageHolder {
 
     /**
      * @return {@link MessageHolder}
@@ -60,127 +77,127 @@ public interface MessageHolder
      * @param messagePart message part.
      * @return {@link MessageHolder}
      */
-    MessageHolder append( CharSequence messagePart );
+    MessageHolder append(CharSequence messagePart);
 
     /**
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder append( Throwable error );
+    MessageHolder append(Throwable error);
 
     /**
      * @param messagePart Message Part.
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addMessage( CharSequence messagePart, Throwable error );
+    MessageHolder addMessage(CharSequence messagePart, Throwable error);
 
     /**
      * @param messagePart message part.
      * @return {@link MessageHolder}
      */
-    MessageHolder addMessage( CharSequence messagePart );
+    MessageHolder addMessage(CharSequence messagePart);
 
     /**
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addMessage( Throwable error );
+    MessageHolder addMessage(Throwable error);
 
     /**
      * @param messagePart message part.
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addDebugMessage( CharSequence messagePart, Throwable error );
+    MessageHolder addDebugMessage(CharSequence messagePart, Throwable error);
 
     /**
      * @param messagePart messages part.
      * @return {@link MessageHolder}
      */
-    MessageHolder addDebugMessage( CharSequence messagePart );
+    MessageHolder addDebugMessage(CharSequence messagePart);
 
     /**
      * @param error messages part.
      * @return {@link MessageHolder}
      */
-    MessageHolder addDebugMessage( Throwable error );
+    MessageHolder addDebugMessage(Throwable error);
 
     /**
      * @param messagePart message part.
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addInfoMessage( CharSequence messagePart, Throwable error );
+    MessageHolder addInfoMessage(CharSequence messagePart, Throwable error);
 
     /**
      * @param messagePart messages part.
      * @return {@link MessageHolder}
      */
-    MessageHolder addInfoMessage( CharSequence messagePart );
+    MessageHolder addInfoMessage(CharSequence messagePart);
 
     /**
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addInfoMessage( Throwable error );
+    MessageHolder addInfoMessage(Throwable error);
 
     /**
      * @param messagePart message part.
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addWarningMessage( CharSequence messagePart, Throwable error );
+    MessageHolder addWarningMessage(CharSequence messagePart, Throwable error);
 
     /**
      * @param messagePart message part.
      * @return {@link MessageHolder}
      */
-    MessageHolder addWarningMessage( CharSequence messagePart );
+    MessageHolder addWarningMessage(CharSequence messagePart);
 
     /**
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addWarningMessage( Throwable error );
-
-    /**
-     * @param messagePart message part.
-     * @param error {@link Throwable}
-     * @return {@link MessageHolder}
-     */
-    MessageHolder addErrorMessage( CharSequence messagePart, Throwable error );
-
-    /**
-     * @param messagePart message part.
-     * @return {@link MessageHolder}
-     */
-    MessageHolder addErrorMessage( CharSequence messagePart );
-
-    /**
-     * @param error {@link Throwable}
-     * @return {@link MessageHolder}
-     */
-    MessageHolder addErrorMessage( Throwable error );
+    MessageHolder addWarningMessage(Throwable error);
 
     /**
      * @param messagePart message part.
      * @param error {@link Throwable}
      * @return {@link MessageHolder}
      */
-    MessageHolder addSevereMessage( CharSequence messagePart, Throwable error );
+    MessageHolder addErrorMessage(CharSequence messagePart, Throwable error);
 
     /**
      * @param messagePart message part.
      * @return {@link MessageHolder}
      */
-    MessageHolder addSevereMessage( CharSequence messagePart );
+    MessageHolder addErrorMessage(CharSequence messagePart);
+
+    /**
+     * @param error {@link Throwable}
+     * @return {@link MessageHolder}
+     */
+    MessageHolder addErrorMessage(Throwable error);
+
+    /**
+     * @param messagePart message part.
+     * @param error {@link Throwable}
+     * @return {@link MessageHolder}
+     */
+    MessageHolder addSevereMessage(CharSequence messagePart, Throwable error);
+
+    /**
+     * @param messagePart message part.
+     * @return {@link MessageHolder}
+     */
+    MessageHolder addSevereMessage(CharSequence messagePart);
 
     /**
      * @param error The error.
      * @return {@link MessageHolder}
      */
-    MessageHolder addSevereMessage( Throwable error );
+    MessageHolder addSevereMessage(Throwable error);
 
     /**
      * @return the size.
@@ -225,7 +242,7 @@ public interface MessageHolder
     /**
      * @param enabled enable debug
      */
-    void setDebugEnabled( boolean enabled );
+    void setDebugEnabled(boolean enabled);
 
     /**
      * @return true if info is enabled false otherwise.
@@ -235,7 +252,7 @@ public interface MessageHolder
     /**
      * @param enabled true info enable false otherwise.
      */
-    void setInfoEnabled( boolean enabled );
+    void setInfoEnabled(boolean enabled);
 
     /**
      * @return true if warning is enabled false otherwise.
@@ -245,7 +262,7 @@ public interface MessageHolder
     /**
      * @param enabled enable warning or disable.
      */
-    void setWarningEnabled( boolean enabled );
+    void setWarningEnabled(boolean enabled);
 
     /**
      * @return true if error is enabled false otherwise.
@@ -255,7 +272,7 @@ public interface MessageHolder
     /**
      * @param enabled enable error or disable.
      */
-    void setErrorEnabled( boolean enabled );
+    void setErrorEnabled(boolean enabled);
 
     /**
      * @return true if server is enabled false otherwise.
@@ -265,7 +282,7 @@ public interface MessageHolder
     /**
      * @param enabled enable server or disable.
      */
-    void setSevereEnabled( boolean enabled );
+    void setSevereEnabled(boolean enabled);
 
     /**
      * @return true if empty false otherwise.
@@ -280,11 +297,10 @@ public interface MessageHolder
     /**
      * @param sink {@link MessageSink}
      */
-    void render( MessageSink sink );
+    void render(MessageSink sink);
 
     /**
      * flush.
      */
     void flush();
-
 }

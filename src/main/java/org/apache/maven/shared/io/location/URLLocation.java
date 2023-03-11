@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.maven.shared.io.location;
 
 /*
@@ -29,9 +47,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * The URL Location.
  */
-public class URLLocation
-    extends FileLocation
-{
+public class URLLocation extends FileLocation {
 
     private final URL url;
 
@@ -48,10 +64,9 @@ public class URLLocation
      * @param tempFileSuffix the suffix
      * @param tempFileDeleteOnExit delete on exit
      */
-    public URLLocation( URL url, String specification, String tempFilePrefix, String tempFileSuffix,
-                        boolean tempFileDeleteOnExit )
-    {
-        super( specification );
+    public URLLocation(
+            URL url, String specification, String tempFilePrefix, String tempFileSuffix, boolean tempFileDeleteOnExit) {
+        super(specification);
 
         this.url = url;
         this.tempFilePrefix = tempFilePrefix;
@@ -60,22 +75,17 @@ public class URLLocation
     }
 
     /** {@inheritDoc} */
-    protected void initFile()
-        throws IOException
-    {
-        if ( unsafeGetFile() == null )
-        {
-            File tempFile = Files.createTempFile( tempFilePrefix, tempFileSuffix ).toFile();
+    protected void initFile() throws IOException {
+        if (unsafeGetFile() == null) {
+            File tempFile = Files.createTempFile(tempFilePrefix, tempFileSuffix).toFile();
 
-            if ( tempFileDeleteOnExit )
-            {
+            if (tempFileDeleteOnExit) {
                 tempFile.deleteOnExit();
             }
 
-            FileUtils.copyURLToFile( url, tempFile );
+            FileUtils.copyURLToFile(url, tempFile);
 
-            setFile( tempFile );
+            setFile(tempFile);
         }
     }
-
 }
