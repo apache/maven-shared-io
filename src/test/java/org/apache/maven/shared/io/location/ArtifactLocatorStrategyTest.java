@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.nio.file.Files;
 import java.util.Collections;
 
 import junit.framework.TestCase;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -37,9 +35,7 @@ import org.apache.maven.shared.io.logging.MessageHolder;
 
 import static org.easymock.EasyMock.*;
 
-public class ArtifactLocatorStrategyTest
-    extends TestCase
-{
+public class ArtifactLocatorStrategyTest extends TestCase {
 
     private ArtifactFactory factory;
 
@@ -47,462 +43,414 @@ public class ArtifactLocatorStrategyTest
 
     private ArtifactRepository localRepository;
 
-    public void setUp()
-    {
-        factory = createMock( ArtifactFactory.class );
-        resolver = createMock( ArtifactResolver.class );
-        localRepository = createMock( ArtifactRepository.class );
+    public void setUp() {
+        factory = createMock(ArtifactFactory.class);
+        resolver = createMock(ArtifactResolver.class);
+        localRepository = createMock(ArtifactRepository.class);
     }
 
-    public void testShouldConstructWithoutDefaultArtifactType()
-    {
-        replay( factory, resolver, localRepository );
+    public void testShouldConstructWithoutDefaultArtifactType() {
+        replay(factory, resolver, localRepository);
 
-        new ArtifactLocatorStrategy( factory, resolver, localRepository, Collections.EMPTY_LIST );
+        new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
 
-        verify( factory, resolver, localRepository );
+        verify(factory, resolver, localRepository);
     }
 
-    public void testShouldConstructWithDefaultArtifactType()
-    {
-        replay( factory, resolver, localRepository );
+    public void testShouldConstructWithDefaultArtifactType() {
+        replay(factory, resolver, localRepository);
 
-        new ArtifactLocatorStrategy( factory, resolver, localRepository, Collections.EMPTY_LIST, "zip" );
+        new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
 
-        verify( factory, resolver, localRepository );
+        verify(factory, resolver, localRepository);
     }
 
-    public void testShouldFailToResolveSpecWithOneToken()
-    {
-        replay( factory, resolver, localRepository );
+    public void testShouldFailToResolveSpecWithOneToken() {
+        replay(factory, resolver, localRepository);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST, "zip" );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "one-token", mh );
+        Location location = strategy.resolve("one-token", mh);
 
-        assertNull( location );
-        assertEquals( 1, mh.size() );
+        assertNull(location);
+        assertEquals(1, mh.size());
 
-        verify( factory, resolver, localRepository );
+        verify(factory, resolver, localRepository);
     }
 
-    public void testShouldFailToResolveSpecWithTwoTokens()
-    {
-        replay( factory, resolver, localRepository );
+    public void testShouldFailToResolveSpecWithTwoTokens() {
+        replay(factory, resolver, localRepository);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST, "zip" );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "two:tokens", mh );
+        Location location = strategy.resolve("two:tokens", mh);
 
-        assertNull( location );
-        assertEquals( 1, mh.size() );
+        assertNull(location);
+        assertEquals(1, mh.size());
 
-        verify( factory, resolver, localRepository );
+        verify(factory, resolver, localRepository);
     }
 
-    public void testShouldResolveSpecWithThreeTokensUsingDefaultType()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
+    public void testShouldResolveSpecWithThreeTokensUsingDefaultType() throws IOException {
+        File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( tempFile );
-        expect( artifact.getFile() ).andReturn( tempFile );
-        
-        expect( factory.createArtifact( "group", "artifact", "version", null, "jar" ) ).andReturn( artifact );
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(tempFile);
+        expect(artifact.getFile()).andReturn(tempFile);
+
+        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version", mh );
+        Location location = strategy.resolve("group:artifact:version", mh);
 
-        assertNotNull( location );
-        assertEquals( 0, mh.size() );
+        assertNotNull(location);
+        assertEquals(0, mh.size());
 
-        assertSame( tempFile, location.getFile() );
+        assertSame(tempFile, location.getFile());
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldResolveSpecWithThreeTokensUsingCustomizedDefaultType()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
+    public void testShouldResolveSpecWithThreeTokensUsingCustomizedDefaultType() throws IOException {
+        File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( tempFile );
-        expect( artifact.getFile() ).andReturn( tempFile );
-        
-        expect( factory.createArtifact( "group", "artifact", "version", null, "zip" ) ).andReturn( artifact );
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(tempFile);
+        expect(artifact.getFile()).andReturn(tempFile);
+
+        expect(factory.createArtifact("group", "artifact", "version", null, "zip"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST, "zip" );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version", mh );
+        Location location = strategy.resolve("group:artifact:version", mh);
 
-        assertNotNull( location );
-        assertEquals( 0, mh.size() );
+        assertNotNull(location);
+        assertEquals(0, mh.size());
 
-        assertSame( tempFile, location.getFile() );
+        assertSame(tempFile, location.getFile());
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldResolveSpecWithFourTokens()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
+    public void testShouldResolveSpecWithFourTokens() throws IOException {
+        File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( tempFile );
-        expect( artifact.getFile() ).andReturn( tempFile );
-        
-        expect( factory.createArtifact( "group", "artifact", "version", null, "zip" ) ).andReturn( artifact );
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(tempFile);
+        expect(artifact.getFile()).andReturn(tempFile);
+
+        expect(factory.createArtifact("group", "artifact", "version", null, "zip"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version:zip", mh );
+        Location location = strategy.resolve("group:artifact:version:zip", mh);
 
-        assertNotNull( location );
-        assertEquals( 0, mh.size() );
+        assertNotNull(location);
+        assertEquals(0, mh.size());
 
-        assertSame( tempFile, location.getFile() );
+        assertSame(tempFile, location.getFile());
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldResolveSpecWithFiveTokens()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
+    public void testShouldResolveSpecWithFiveTokens() throws IOException {
+        File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( tempFile );
-        expect( artifact.getFile() ).andReturn( tempFile );
-        
-        expect( factory.createArtifactWithClassifier( "group", "artifact", "version", "zip", "classifier" ) )
-                .andReturn( artifact );
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(tempFile);
+        expect(artifact.getFile()).andReturn(tempFile);
+
+        expect(factory.createArtifactWithClassifier("group", "artifact", "version", "zip", "classifier"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version:zip:classifier", mh );
+        Location location = strategy.resolve("group:artifact:version:zip:classifier", mh);
 
-        assertNotNull( location );
-        assertEquals( 0, mh.size() );
+        assertNotNull(location);
+        assertEquals(0, mh.size());
 
-        assertSame( tempFile, location.getFile() );
+        assertSame(tempFile, location.getFile());
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldResolveSpecWithFiveTokensAndEmptyTypeToken()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
+    public void testShouldResolveSpecWithFiveTokensAndEmptyTypeToken() throws IOException {
+        File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( tempFile );
-        expect( artifact.getFile() ).andReturn( tempFile );
-        
-        expect( factory.createArtifactWithClassifier( "group", "artifact", "version", "jar", "classifier" ) )
-                .andReturn( artifact );
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(tempFile);
+        expect(artifact.getFile()).andReturn(tempFile);
+
+        expect(factory.createArtifactWithClassifier("group", "artifact", "version", "jar", "classifier"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version::classifier", mh );
+        Location location = strategy.resolve("group:artifact:version::classifier", mh);
 
-        assertNotNull( location );
-        assertEquals( 0, mh.size() );
+        assertNotNull(location);
+        assertEquals(0, mh.size());
 
-        assertSame( tempFile, location.getFile() );
+        assertSame(tempFile, location.getFile());
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldResolveSpecWithMoreThanFiveTokens()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "artifact-location.", ".temp" ).toFile();
+    public void testShouldResolveSpecWithMoreThanFiveTokens() throws IOException {
+        File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( tempFile );
-        expect( artifact.getFile() ).andReturn( tempFile );
-        
-        expect( factory.createArtifactWithClassifier( "group", "artifact", "version", "zip", "classifier" ) )
-                .andReturn( artifact );
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(tempFile);
+        expect(artifact.getFile()).andReturn(tempFile);
+
+        expect(factory.createArtifactWithClassifier("group", "artifact", "version", "zip", "classifier"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version:zip:classifier:six:seven", mh );
+        Location location = strategy.resolve("group:artifact:version:zip:classifier:six:seven", mh);
 
-        assertNotNull( location );
-        assertEquals( 1, mh.size() );
+        assertNotNull(location);
+        assertEquals(1, mh.size());
 
-        assertTrue( mh.render().indexOf( ":six:seven" ) > -1 );
+        assertTrue(mh.render().indexOf(":six:seven") > -1);
 
-        assertSame( tempFile, location.getFile() );
+        assertSame(tempFile, location.getFile());
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldNotResolveSpecToArtifactWithNullFile()
-        throws IOException
-    {
-        Artifact artifact = createMock( Artifact.class );
-        
-        expect( artifact.getFile() ).andReturn( null );
-        expect( artifact.getId() ).andReturn( "<some-artifact-id>" );
-        
-        expect( factory.createArtifact( "group", "artifact", "version", null, "jar" )).andReturn( artifact );
+    public void testShouldNotResolveSpecToArtifactWithNullFile() throws IOException {
+        Artifact artifact = createMock(Artifact.class);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        expect(artifact.getFile()).andReturn(null);
+        expect(artifact.getId()).andReturn("<some-artifact-id>");
+
+        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .andReturn(artifact);
+
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version", mh );
+        Location location = strategy.resolve("group:artifact:version", mh);
 
-        assertNull( location );
-        assertEquals( 1, mh.size() );
+        assertNull(location);
+        assertEquals(1, mh.size());
 
-        assertTrue( mh.render().indexOf( "<some-artifact-id>" ) > -1 );
+        assertTrue(mh.render().indexOf("<some-artifact-id>") > -1);
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldNotResolveWhenArtifactNotFoundExceptionThrown()
-        throws IOException
-    {
-        Artifact artifact = createMock( Artifact.class );
+    public void testShouldNotResolveWhenArtifactNotFoundExceptionThrown() throws IOException {
+        Artifact artifact = createMock(Artifact.class);
 
-        expect( artifact.getId() ).andReturn( "<some-artifact-id>" );
+        expect(artifact.getId()).andReturn("<some-artifact-id>");
 
-        expect( factory.createArtifact( "group", "artifact", "version", null, "jar" ) ).andReturn( artifact );
+        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .andReturn(artifact);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-            expectLastCall().andThrow( new ArtifactNotFoundException( "not found", "group", "artifact", "version",
-                                                                               "jar", null, Collections.<ArtifactRepository>emptyList(),
-                                                                               "http://nowhere.com", Collections.<String>emptyList(),
-                                                                                new NullPointerException() ) );
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+            expectLastCall()
+                    .andThrow(new ArtifactNotFoundException(
+                            "not found",
+                            "group",
+                            "artifact",
+                            "version",
+                            "jar",
+                            null,
+                            Collections.<ArtifactRepository>emptyList(),
+                            "http://nowhere.com",
+                            Collections.<String>emptyList(),
+                            new NullPointerException()));
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version", mh );
+        Location location = strategy.resolve("group:artifact:version", mh);
 
-        assertNull( location );
-        assertEquals( 1, mh.size() );
+        assertNull(location);
+        assertEquals(1, mh.size());
 
-        assertTrue( mh.render().indexOf( "<some-artifact-id>" ) > -1 );
-        assertTrue( mh.render().indexOf( "not found" ) > -1 );
+        assertTrue(mh.render().indexOf("<some-artifact-id>") > -1);
+        assertTrue(mh.render().indexOf("not found") > -1);
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
 
-    public void testShouldNotResolveWhenArtifactResolutionExceptionThrown()
-        throws IOException
-    {
-        Artifact artifact = createMock( Artifact.class );
+    public void testShouldNotResolveWhenArtifactResolutionExceptionThrown() throws IOException {
+        Artifact artifact = createMock(Artifact.class);
 
-        expect( artifact.getId() ).andReturn( "<some-artifact-id>" );
+        expect(artifact.getId()).andReturn("<some-artifact-id>");
 
-        expect( factory.createArtifact( "group", "artifact", "version", null, "jar" ) ).andReturn( artifact );
+        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .andReturn(artifact);
 
-        try
-        {
-            resolver.resolve( artifact, Collections.<ArtifactRepository>emptyList(), localRepository );
-            expectLastCall().andThrow( new ArtifactResolutionException( "resolution failed", "group", "artifact",
-                                                                                 "version", "jar", null, Collections.<ArtifactRepository>emptyList(),
-                                                                                 Collections.<String>emptyList(),
-                                                                                 new NullPointerException() ) );
+        try {
+            resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
+            expectLastCall()
+                    .andThrow(new ArtifactResolutionException(
+                            "resolution failed",
+                            "group",
+                            "artifact",
+                            "version",
+                            "jar",
+                            null,
+                            Collections.<ArtifactRepository>emptyList(),
+                            Collections.<String>emptyList(),
+                            new NullPointerException()));
 
-        }
-        catch ( ArtifactResolutionException e )
-        {
+        } catch (ArtifactResolutionException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
-        }
-        catch ( ArtifactNotFoundException e )
-        {
+            fail("This should NEVER happen. It's a mock!");
+        } catch (ArtifactNotFoundException e) {
             // should never happen
-            fail( "This should NEVER happen. It's a mock!" );
+            fail("This should NEVER happen. It's a mock!");
         }
 
-        replay( factory, resolver, localRepository, artifact );
+        replay(factory, resolver, localRepository, artifact);
 
-        LocatorStrategy strategy = new ArtifactLocatorStrategy( factory, resolver, localRepository,
-                                                                Collections.EMPTY_LIST );
+        LocatorStrategy strategy =
+                new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = strategy.resolve( "group:artifact:version", mh );
+        Location location = strategy.resolve("group:artifact:version", mh);
 
-        assertNull( location );
-        assertEquals( 1, mh.size() );
+        assertNull(location);
+        assertEquals(1, mh.size());
 
-        assertTrue( mh.render().indexOf( "<some-artifact-id>" ) > -1 );
-        assertTrue( mh.render().indexOf( "resolution failed" ) > -1 );
+        assertTrue(mh.render().indexOf("<some-artifact-id>") > -1);
+        assertTrue(mh.render().indexOf("resolution failed") > -1);
 
-        verify( factory, resolver, localRepository, artifact );
+        verify(factory, resolver, localRepository, artifact);
     }
-
 }

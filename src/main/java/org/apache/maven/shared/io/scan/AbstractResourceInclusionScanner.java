@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.scan;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.scan;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,23 +31,19 @@ import org.apache.maven.shared.utils.io.DirectoryScanner;
  * @author jdcasey
  * @version $Id$
  */
-public abstract class AbstractResourceInclusionScanner
-    implements ResourceInclusionScanner
-{
+public abstract class AbstractResourceInclusionScanner implements ResourceInclusionScanner {
     private final List<SourceMapping> sourceMappings = new ArrayList<SourceMapping>();
 
     /** {@inheritDoc} */
-    public final void addSourceMapping( SourceMapping sourceMapping )
-    {
-        sourceMappings.add( sourceMapping );
+    public final void addSourceMapping(SourceMapping sourceMapping) {
+        sourceMappings.add(sourceMapping);
     }
 
     /**
      * @return The source mapping.
      */
-    protected final List<SourceMapping> getSourceMappings()
-    {
-        return Collections.unmodifiableList( sourceMappings );
+    protected final List<SourceMapping> getSourceMappings() {
+        return Collections.unmodifiableList(sourceMappings);
     }
 
     /**
@@ -57,35 +52,28 @@ public abstract class AbstractResourceInclusionScanner
      * @param sourceExcludes source excludes.
      * @return The resulting sources.
      */
-    protected String[] scanForSources( File sourceDir, Set<String> sourceIncludes, Set<String> sourceExcludes )
-    {
+    protected String[] scanForSources(File sourceDir, Set<String> sourceIncludes, Set<String> sourceExcludes) {
         DirectoryScanner ds = new DirectoryScanner();
-        ds.setFollowSymlinks( true );
-        ds.setBasedir( sourceDir );
+        ds.setFollowSymlinks(true);
+        ds.setBasedir(sourceDir);
 
         String[] includes;
-        if ( sourceIncludes.isEmpty() )
-        {
+        if (sourceIncludes.isEmpty()) {
             includes = new String[0];
-        }
-        else
-        {
-            includes = (String[]) sourceIncludes.toArray( new String[sourceIncludes.size()] );
+        } else {
+            includes = (String[]) sourceIncludes.toArray(new String[sourceIncludes.size()]);
         }
 
-        ds.setIncludes( includes );
+        ds.setIncludes(includes);
 
         String[] excludes;
-        if ( sourceExcludes.isEmpty() )
-        {
+        if (sourceExcludes.isEmpty()) {
             excludes = new String[0];
-        }
-        else
-        {
-            excludes = (String[]) sourceExcludes.toArray( new String[sourceExcludes.size()] );
+        } else {
+            excludes = (String[]) sourceExcludes.toArray(new String[sourceExcludes.size()]);
         }
 
-        ds.setExcludes( excludes );
+        ds.setExcludes(excludes);
         ds.addDefaultExcludes();
 
         ds.scan();

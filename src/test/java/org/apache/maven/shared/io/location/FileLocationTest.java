@@ -1,7 +1,3 @@
-package org.apache.maven.shared.io.location;
-
-import org.apache.commons.io.FileUtils;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,6 +16,7 @@ import org.apache.commons.io.FileUtils;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,154 +24,139 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+
 import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-public class FileLocationTest
-    extends TestCase
-{
+public class FileLocationTest extends TestCase {
 
-    public void testShouldConstructWithFileThenRetrieveSameFile() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldConstructWithFileThenRetrieveSameFile() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
-        FileLocation location = new FileLocation( file, file.getAbsolutePath() );
+        FileLocation location = new FileLocation(file, file.getAbsolutePath());
 
-        assertSame( file, location.getFile() );
-        assertEquals( file.getAbsolutePath(), location.getSpecification() );
+        assertSame(file, location.getFile());
+        assertEquals(file.getAbsolutePath(), location.getSpecification());
     }
 
-    public void testShouldReadFileContentsUsingByteBuffer() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldReadFileContentsUsingByteBuffer() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
 
         FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
-        FileLocation location = new FileLocation( file, file.getAbsolutePath() );
+        FileLocation location = new FileLocation(file, file.getAbsolutePath());
 
         location.open();
 
-        ByteBuffer buffer = ByteBuffer.allocate( testStr.length() );
-        location.read( buffer );
+        ByteBuffer buffer = ByteBuffer.allocate(testStr.length());
+        location.read(buffer);
 
-        assertEquals( testStr, new String( buffer.array(), "US-ASCII" ) );
+        assertEquals(testStr, new String(buffer.array(), "US-ASCII"));
     }
 
-    public void testShouldReadFileContentsUsingStream() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldReadFileContentsUsingStream() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
 
         FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
-        FileLocation location = new FileLocation( file, file.getAbsolutePath() );
+        FileLocation location = new FileLocation(file, file.getAbsolutePath());
 
         location.open();
 
-        try ( InputStream stream = location.getInputStream() ) {
+        try (InputStream stream = location.getInputStream()) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            IOUtils.copy( stream, out );
-    
-            assertEquals( testStr, new String(out.toByteArray(), "US-ASCII" ) );
+            IOUtils.copy(stream, out);
+
+            assertEquals(testStr, new String(out.toByteArray(), "US-ASCII"));
         }
     }
 
-    public void testShouldReadFileContentsUsingByteArray() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldReadFileContentsUsingByteArray() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
 
         FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
-        FileLocation location = new FileLocation( file, file.getAbsolutePath() );
+        FileLocation location = new FileLocation(file, file.getAbsolutePath());
 
         location.open();
 
-        byte[] buffer = new byte[ testStr.length() ];
-        location.read( buffer );
+        byte[] buffer = new byte[testStr.length()];
+        location.read(buffer);
 
-        assertEquals( testStr, new String( buffer, "US-ASCII" ) );
+        assertEquals(testStr, new String(buffer, "US-ASCII"));
     }
 
-    public void testShouldReadThenClose() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldReadThenClose() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
         String testStr = "This is a test";
 
         FileUtils.writeStringToFile(file, testStr, "US-ASCII");
 
-        FileLocation location = new FileLocation( file, file.getAbsolutePath() );
+        FileLocation location = new FileLocation(file, file.getAbsolutePath());
 
         location.open();
 
-        byte[] buffer = new byte[ testStr.length() ];
-        location.read( buffer );
+        byte[] buffer = new byte[testStr.length()];
+        location.read(buffer);
 
-        assertEquals( testStr, new String( buffer, "US-ASCII" ) );
+        assertEquals(testStr, new String(buffer, "US-ASCII"));
 
         location.close();
     }
 
-    public void testShouldOpenThenFailToSetFile() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldOpenThenFailToSetFile() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
-        TestFileLocation location = new TestFileLocation( file.getAbsolutePath() );
+        TestFileLocation location = new TestFileLocation(file.getAbsolutePath());
 
         location.open();
 
-        try
-        {
-            location.setFile( file );
+        try {
+            location.setFile(file);
 
-            fail( "should not succeed." );
-        }
-        catch( IllegalStateException e )
-        {
+            fail("should not succeed.");
+        } catch (IllegalStateException e) {
         }
     }
 
-    public void testShouldConstructWithoutFileThenSetFileThenOpen() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldConstructWithoutFileThenSetFileThenOpen() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
-        TestFileLocation location = new TestFileLocation( file.getAbsolutePath() );
+        TestFileLocation location = new TestFileLocation(file.getAbsolutePath());
 
-        location.setFile( file );
+        location.setFile(file);
         location.open();
     }
 
-    public void testShouldConstructWithLocationThenRetrieveEquivalentFile() throws IOException
-    {
-        File file = Files.createTempFile( "test.", ".file-location" ).toFile();
+    public void testShouldConstructWithLocationThenRetrieveEquivalentFile() throws IOException {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
-        Location location = new TestFileLocation( file.getAbsolutePath() );
+        Location location = new TestFileLocation(file.getAbsolutePath());
 
-        assertEquals( file, location.getFile() );
-        assertEquals( file.getAbsolutePath(), location.getSpecification() );
+        assertEquals(file, location.getFile());
+        assertEquals(file.getAbsolutePath(), location.getSpecification());
     }
 
-    private static final class TestFileLocation extends FileLocation
-    {
+    private static final class TestFileLocation extends FileLocation {
 
-        TestFileLocation( String specification )
-        {
-            super( specification );
+        TestFileLocation(String specification) {
+            super(specification);
         }
-
     }
-
 }

@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.scan;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.scan;
 
 import java.io.File;
 import java.util.Collections;
@@ -31,9 +30,7 @@ import org.apache.maven.shared.io.scan.mapping.SourceMapping;
  * @author jdcasey
  * @version $Id$
  */
-public class StaleResourceScanner
-    extends AbstractResourceInclusionScanner
-{
+public class StaleResourceScanner extends AbstractResourceInclusionScanner {
     private final long lastUpdatedWithinMsecs;
 
     private final Set<String> sourceIncludes;
@@ -47,17 +44,15 @@ public class StaleResourceScanner
     /**
      * Create instance with defaults.
      */
-    public StaleResourceScanner()
-    {
-        this( 0, Collections.singleton( "**/*" ), Collections.<String>emptySet() );
+    public StaleResourceScanner() {
+        this(0, Collections.singleton("**/*"), Collections.<String>emptySet());
     }
 
     /**
      * @param lastUpdatedWithinMsecs last update within milli seconds.
      */
-    public StaleResourceScanner( long lastUpdatedWithinMsecs )
-    {
-        this( lastUpdatedWithinMsecs, Collections.singleton( "**/*" ), Collections.<String>emptySet() );
+    public StaleResourceScanner(long lastUpdatedWithinMsecs) {
+        this(lastUpdatedWithinMsecs, Collections.singleton("**/*"), Collections.<String>emptySet());
     }
 
     /**
@@ -65,8 +60,7 @@ public class StaleResourceScanner
      * @param sourceIncludes source includes.
      * @param sourceExcludes source excludes.
      */
-    public StaleResourceScanner( long lastUpdatedWithinMsecs, Set<String> sourceIncludes, Set<String> sourceExcludes )
-    {
+    public StaleResourceScanner(long lastUpdatedWithinMsecs, Set<String> sourceIncludes, Set<String> sourceExcludes) {
         this.lastUpdatedWithinMsecs = lastUpdatedWithinMsecs;
 
         this.sourceIncludes = sourceIncludes;
@@ -79,39 +73,33 @@ public class StaleResourceScanner
     // ----------------------------------------------------------------------
 
     /** {@inheritDoc} */
-    public Set<File> getIncludedSources( File sourceDir, File targetDir )
-        throws InclusionScanException
-    {
+    public Set<File> getIncludedSources(File sourceDir, File targetDir) throws InclusionScanException {
         List<SourceMapping> srcMappings = getSourceMappings();
 
-        if ( srcMappings.isEmpty() )
-        {
+        if (srcMappings.isEmpty()) {
             return Collections.<File>emptySet();
         }
 
-        String[] potentialIncludes = scanForSources( sourceDir, sourceIncludes, sourceExcludes );
+        String[] potentialIncludes = scanForSources(sourceDir, sourceIncludes, sourceExcludes);
 
         Set<File> matchingSources = new HashSet<File>();
 
-        for ( int i = 0; i < potentialIncludes.length; i++ )
-        {
+        for (int i = 0; i < potentialIncludes.length; i++) {
             String path = potentialIncludes[i];
 
-            File sourceFile = new File( sourceDir, path );
+            File sourceFile = new File(sourceDir, path);
 
-            staleSourceFileTesting: for ( SourceMapping mapping : srcMappings )
-            {
-                Set<File> targetFiles = mapping.getTargetFiles( targetDir, path );
+            staleSourceFileTesting:
+            for (SourceMapping mapping : srcMappings) {
+                Set<File> targetFiles = mapping.getTargetFiles(targetDir, path);
 
                 // never include files that don't have corresponding target mappings.
                 // the targets don't have to exist on the filesystem, but the
                 // mappers must tell us to look for them.
-                for ( File targetFile : targetFiles )
-                {
-                    if ( !targetFile.exists()
-                        || ( targetFile.lastModified() + lastUpdatedWithinMsecs < sourceFile.lastModified() ) )
-                    {
-                        matchingSources.add( sourceFile );
+                for (File targetFile : targetFiles) {
+                    if (!targetFile.exists()
+                            || (targetFile.lastModified() + lastUpdatedWithinMsecs < sourceFile.lastModified())) {
+                        matchingSources.add(sourceFile);
                         break staleSourceFileTesting;
                     }
                 }

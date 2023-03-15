@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,54 +16,49 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import junit.framework.TestCase;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
 
-import junit.framework.TestCase;
+public class FileLocatorStrategyTest extends TestCase {
 
-public class FileLocatorStrategyTest
-    extends TestCase
-{
-
-    public void testShouldResolveExistingTempFileLocation() throws IOException
-    {
-        File f = Files.createTempFile( "file-locator.", ".test" ).toFile();
+    public void testShouldResolveExistingTempFileLocation() throws IOException {
+        File f = Files.createTempFile("file-locator.", ".test").toFile();
         f.deleteOnExit();
 
         FileLocatorStrategy fls = new FileLocatorStrategy();
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = fls.resolve( f.getAbsolutePath(), mh );
+        Location location = fls.resolve(f.getAbsolutePath(), mh);
 
-        assertNotNull( location );
+        assertNotNull(location);
 
-        assertTrue( mh.isEmpty() );
+        assertTrue(mh.isEmpty());
 
-        assertEquals( f, location.getFile() );
+        assertEquals(f, location.getFile());
     }
 
-    public void testShouldFailToResolveNonExistentFileLocation() throws IOException
-    {
-        File f = Files.createTempFile( "file-locator.", ".test" ).toFile();
+    public void testShouldFailToResolveNonExistentFileLocation() throws IOException {
+        File f = Files.createTempFile("file-locator.", ".test").toFile();
         f.delete();
 
         FileLocatorStrategy fls = new FileLocatorStrategy();
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        Location location = fls.resolve( f.getAbsolutePath(), mh );
+        Location location = fls.resolve(f.getAbsolutePath(), mh);
 
-        assertNull( location );
+        assertNull(location);
 
-        System.out.println( mh.render() );
+        System.out.println(mh.render());
 
-        assertEquals( 1, mh.size() );
+        assertEquals(1, mh.size());
     }
-
 }

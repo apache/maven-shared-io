@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.io.File;
 
@@ -27,27 +26,20 @@ import org.apache.maven.shared.io.logging.MessageHolder;
  * file locator strategy.
  *
  */
-public class FileLocatorStrategy
-    implements LocatorStrategy
-{
+public class FileLocatorStrategy implements LocatorStrategy {
 
     /** {@inheritDoc} */
-    public Location resolve( String locationSpecification, MessageHolder messageHolder )
-    {
-        File file = new File( locationSpecification );
+    public Location resolve(String locationSpecification, MessageHolder messageHolder) {
+        File file = new File(locationSpecification);
 
         Location location = null;
 
-        if ( file.exists() )
-        {
-            location = new FileLocation( file, locationSpecification );
-        }
-        else
-        {
-            messageHolder.addMessage( "File: " + file.getAbsolutePath() + " does not exist." );
+        if (file.exists()) {
+            location = new FileLocation(file, locationSpecification);
+        } else {
+            messageHolder.addMessage("File: " + file.getAbsolutePath() + " does not exist.");
         }
 
         return location;
     }
-
 }

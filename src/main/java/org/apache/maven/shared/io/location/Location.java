@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +25,12 @@ import java.nio.ByteBuffer;
 
 /**
  * The location interface.
- *
  */
-public interface Location
-{
+public interface Location {
 
     /**
-     * @return {@link File}.
-     * @throws IOException in case of an error.
+     * @return {@link File}
+     * @throws IOException in case of an error
      */
     File getFile() throws IOException;
 
@@ -53,14 +50,14 @@ public interface Location
      * @return number of read bytes.
      * @throws IOException in case of an error.
      */
-    int read( ByteBuffer buffer ) throws IOException;
+    int read(ByteBuffer buffer) throws IOException;
 
     /**
      * @param buffer The buffer.
      * @return number of read bytes.
      * @throws IOException in case of an error.
      */
-    int read( byte[] buffer ) throws IOException;
+    int read(byte[] buffer) throws IOException;
 
     /**
      * @return the resulting input stream.
@@ -72,5 +69,4 @@ public interface Location
      * @return spec.
      */
     String getSpecification();
-
 }

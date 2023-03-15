@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan.mapping;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,12 +16,13 @@ package org.apache.maven.shared.io.scan.mapping;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.scan.mapping;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.Set;
 
 import org.apache.maven.shared.io.scan.InclusionScanException;
-
-import java.util.Set;
-import java.util.Collections;
-import java.io.File;
 
 /**
  * Maps a set of input files to a single output file.
@@ -31,9 +30,7 @@ import java.io.File;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class SingleTargetMapping
-    implements SourceMapping
-{
+public class SingleTargetMapping implements SourceMapping {
     private String sourceSuffix;
 
     private String outputFile;
@@ -42,22 +39,18 @@ public class SingleTargetMapping
      * @param sourceSuffix source suffix.
      * @param outputFile output file.
      */
-    public SingleTargetMapping( String sourceSuffix, String outputFile )
-    {
+    public SingleTargetMapping(String sourceSuffix, String outputFile) {
         this.sourceSuffix = sourceSuffix;
 
         this.outputFile = outputFile;
     }
 
     /** {@inheritDoc} */
-    public Set<File> getTargetFiles( File targetDir, String source )
-        throws InclusionScanException
-    {
-        if ( !source.endsWith( sourceSuffix ) )
-        {
+    public Set<File> getTargetFiles(File targetDir, String source) throws InclusionScanException {
+        if (!source.endsWith(sourceSuffix)) {
             return Collections.<File>emptySet();
         }
 
-        return Collections.singleton( new File( targetDir, outputFile ) );
+        return Collections.singleton(new File(targetDir, outputFile));
     }
 }

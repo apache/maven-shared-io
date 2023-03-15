@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,25 +16,21 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import org.apache.maven.artifact.Artifact;
 
 /**
  * The artifact location.
- *
  */
-public class ArtifactLocation
-    extends FileLocation
-{
+public class ArtifactLocation extends FileLocation {
 
     /**
      * @param artifact {@link Artifact}
-     * @param specification The specification.
+     * @param specification the specification
      */
-    public ArtifactLocation( Artifact artifact, String specification )
-    {
-        super( specification );
-        setFile( artifact.getFile() );
+    public ArtifactLocation(Artifact artifact, String specification) {
+        super(specification);
+        setFile(artifact.getFile());
     }
-
 }

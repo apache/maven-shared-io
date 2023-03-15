@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.download;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.download;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.download;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,9 +45,7 @@ import org.apache.maven.wagon.repository.Repository;
  * The Implementation of the {@link DownloadManager}
  *
  */
-public class DefaultDownloadManager
-    implements DownloadManager
-{
+public class DefaultDownloadManager implements DownloadManager {
 
     /**
      * Role hint.
@@ -62,152 +59,116 @@ public class DefaultDownloadManager
     /**
      * Create an instance of the {@code DefaultDownloadManager}.
      */
-    public DefaultDownloadManager()
-    {
-    }
+    public DefaultDownloadManager() {}
 
     /**
      * @param wagonManager {@link org.apache.maven.repository.legacy.WagonManager}
      */
-    public DefaultDownloadManager( WagonManager wagonManager )
-    {
+    public DefaultDownloadManager(WagonManager wagonManager) {
         this.wagonManager = wagonManager;
     }
 
     /** {@inheritDoc} */
-    public File download( String url, MessageHolder messageHolder )
-        throws DownloadFailedException
-    {
-        return download( url, Collections.<TransferListener>emptyList(), messageHolder );
+    public File download(String url, MessageHolder messageHolder) throws DownloadFailedException {
+        return download(url, Collections.<TransferListener>emptyList(), messageHolder);
     }
 
     /** {@inheritDoc} */
-    public File download( String url, List<TransferListener> transferListeners, MessageHolder messageHolder )
-        throws DownloadFailedException
-    {
-        File downloaded = (File) cache.get( url );
+    public File download(String url, List<TransferListener> transferListeners, MessageHolder messageHolder)
+            throws DownloadFailedException {
+        File downloaded = (File) cache.get(url);
 
-        if ( downloaded != null && downloaded.exists() )
-        {
-            messageHolder.addMessage( "Using cached download: " + downloaded.getAbsolutePath() );
+        if (downloaded != null && downloaded.exists()) {
+            messageHolder.addMessage("Using cached download: " + downloaded.getAbsolutePath());
 
             return downloaded;
         }
 
         URL sourceUrl;
-        try
-        {
-            sourceUrl = new URL( url );
-        }
-        catch ( MalformedURLException e )
-        {
-            throw new DownloadFailedException( url, "Download failed due to invalid URL.",
-                                               e );
+        try {
+            sourceUrl = new URL(url);
+        } catch (MalformedURLException e) {
+            throw new DownloadFailedException(url, "Download failed due to invalid URL.", e);
         }
 
         Wagon wagon = null;
 
         // Retrieve the correct Wagon instance used to download the remote archive
-        try
-        {
-            wagon = wagonManager.getWagon( sourceUrl.getProtocol() );
-        }
-        catch ( UnsupportedProtocolException e )
-        {
-            throw new DownloadFailedException( url, "Download failed", e );
+        try {
+            wagon = wagonManager.getWagon(sourceUrl.getProtocol());
+        } catch (UnsupportedProtocolException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
         }
 
-        messageHolder.addMessage( "Using wagon: " + wagon + " to download: " + url );
+        messageHolder.addMessage("Using wagon: " + wagon + " to download: " + url);
 
-        try
-        {
+        try {
             // create the landing file in /tmp for the downloaded source archive
-            downloaded = Files.createTempFile( "download-", null ).toFile();
+            downloaded = Files.createTempFile("download-", null).toFile();
 
             // delete when the JVM exits, to avoid polluting the temp dir...
             downloaded.deleteOnExit();
-        }
-        catch ( IOException e )
-        {
-            throw new DownloadFailedException( url, "Failed to create temporary file target for download.", e );
+        } catch (IOException e) {
+            throw new DownloadFailedException(url, "Failed to create temporary file target for download.", e);
         }
 
-        messageHolder.addMessage( "Download target is: " + downloaded.getAbsolutePath() );
+        messageHolder.addMessage("Download target is: " + downloaded.getAbsolutePath());
 
         // split the download URL into base URL and remote path for connecting, then retrieving.
         String remotePath = sourceUrl.getPath();
-        String baseUrl = url.substring( 0, url.length() - remotePath.length() );
+        String baseUrl = url.substring(0, url.length() - remotePath.length());
 
-        for ( Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); )
-        {
-            wagon.addTransferListener( it.next() );
+        for (Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); ) {
+            wagon.addTransferListener(it.next());
         }
 
         // connect to the remote site, and retrieve the archive. Note the separate methods in which
         // base URL and remote path are used.
-        Repository repo = new Repository( sourceUrl.getHost(), baseUrl );
+        Repository repo = new Repository(sourceUrl.getHost(), baseUrl);
 
-        messageHolder.addMessage( "Connecting to: " + repo.getHost() + "(baseUrl: " + repo.getUrl() + ")" );
+        messageHolder.addMessage("Connecting to: " + repo.getHost() + "(baseUrl: " + repo.getUrl() + ")");
 
-        try
-        {
-            wagon.connect( repo, wagonManager.getAuthenticationInfo( repo.getId() ),
-                           wagonManager.getProxy( sourceUrl.getProtocol() ) );
-        }
-        catch ( ConnectionException e )
-        {
-            throw new DownloadFailedException( url, "Download failed", e );
-        }
-        catch ( AuthenticationException e )
-        {
-            throw new DownloadFailedException( url, "Download failed", e );
+        try {
+            wagon.connect(
+                    repo,
+                    wagonManager.getAuthenticationInfo(repo.getId()),
+                    wagonManager.getProxy(sourceUrl.getProtocol()));
+        } catch (ConnectionException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
+        } catch (AuthenticationException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
         }
 
-        messageHolder.addMessage( "Getting: " + remotePath );
+        messageHolder.addMessage("Getting: " + remotePath);
 
-        try
-        {
-            wagon.get( remotePath, downloaded );
+        try {
+            wagon.get(remotePath, downloaded);
 
             // cache this for later download requests to the same instance...
-            cache.put( url, downloaded );
+            cache.put(url, downloaded);
 
             return downloaded;
-        }
-        catch ( TransferFailedException e )
-        {
-            throw new DownloadFailedException( url, "Download failed", e );
-        }
-        catch ( ResourceDoesNotExistException e )
-        {
-            throw new DownloadFailedException( url, "Download failed", e );
-        }
-        catch ( AuthorizationException e )
-        {
-            throw new DownloadFailedException( url, "Download failed", e );
-        }
-        finally
-        {
+        } catch (TransferFailedException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
+        } catch (ResourceDoesNotExistException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
+        } catch (AuthorizationException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
+        } finally {
             // ensure the Wagon instance is closed out properly.
-            if ( wagon != null )
-            {
-                try
-                {
-                    messageHolder.addMessage( "Disconnecting." );
+            if (wagon != null) {
+                try {
+                    messageHolder.addMessage("Disconnecting.");
 
                     wagon.disconnect();
-                }
-                catch ( ConnectionException e )
-                {
-                    messageHolder.addMessage( "Failed to disconnect wagon for: " + url, e );
+                } catch (ConnectionException e) {
+                    messageHolder.addMessage("Failed to disconnect wagon for: " + url, e);
                 }
 
-                for ( Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); )
-                {
-                    wagon.removeTransferListener( it.next() );
+                for (Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); ) {
+                    wagon.removeTransferListener(it.next());
                 }
             }
         }
     }
-
 }

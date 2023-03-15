@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,21 +16,19 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import org.apache.maven.shared.io.logging.MessageHolder;
 
 /**
  * Locator Strategy interface.
- *
  */
-public interface LocatorStrategy
-{
+public interface LocatorStrategy {
 
     /**
      * @param locationSpecification the specification.
      * @param messageHolder {@link MessageHolder}
      * @return {@link Location}
      */
-    Location resolve( String locationSpecification, MessageHolder messageHolder );
-
+    Location resolve(String locationSpecification, MessageHolder messageHolder);
 }

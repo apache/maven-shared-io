@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.download;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,27 +16,24 @@ package org.apache.maven.shared.io.download;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.download;
 
 /**
  * The Download Failed Exception.
- *
  */
-public class DownloadFailedException
-    extends Exception
-{
+public class DownloadFailedException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     private String url;
 
     /**
-     * @param url The url.
-     * @param message The message.
-     * @param cause The cause of the problem.
+     * @param url the url
+     * @param message the message
+     * @param cause the cause of the problem
      */
-    public DownloadFailedException( String url, String message, Throwable cause )
-    {
-        super( message, cause );
+    public DownloadFailedException(String url, String message, Throwable cause) {
+        super(message, cause);
         this.url = url;
     }
 
@@ -46,18 +41,15 @@ public class DownloadFailedException
      * @param url The url.
      * @param message The message.
      */
-    public DownloadFailedException( String url, String message )
-    {
-        super( message );
+    public DownloadFailedException(String url, String message) {
+        super(message);
         this.url = url;
     }
 
     /**
      * @return The url.
      */
-    public String getUrl()
-    {
+    public String getUrl() {
         return url;
     }
-
 }

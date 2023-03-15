@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.util.List;
 
@@ -31,11 +30,8 @@ import org.apache.maven.shared.io.logging.MessageHolder;
 
 /**
  * The locator strategy.
- *
  */
-public class ArtifactLocatorStrategy
-    implements LocatorStrategy
-{
+public class ArtifactLocatorStrategy implements LocatorStrategy {
     private final ArtifactFactory factory;
 
     private final ArtifactResolver resolver;
@@ -54,9 +50,11 @@ public class ArtifactLocatorStrategy
      * @param localRepository {@link ArtifactRepository}
      * @param remoteRepositories {@link ArtifactRepository}
      */
-    public ArtifactLocatorStrategy( ArtifactFactory factory, ArtifactResolver resolver,
-                                    ArtifactRepository localRepository, List<ArtifactRepository> remoteRepositories )
-    {
+    public ArtifactLocatorStrategy(
+            ArtifactFactory factory,
+            ArtifactResolver resolver,
+            ArtifactRepository localRepository,
+            List<ArtifactRepository> remoteRepositories) {
         this.factory = factory;
         this.resolver = resolver;
         this.localRepository = localRepository;
@@ -70,10 +68,12 @@ public class ArtifactLocatorStrategy
      * @param remoteRepositories {@link ArtifactRepository}
      * @param defaultArtifactType default artifact type.
      */
-    public ArtifactLocatorStrategy( ArtifactFactory factory, ArtifactResolver resolver,
-                                    ArtifactRepository localRepository, List<ArtifactRepository> remoteRepositories,
-                                    String defaultArtifactType )
-    {
+    public ArtifactLocatorStrategy(
+            ArtifactFactory factory,
+            ArtifactResolver resolver,
+            ArtifactRepository localRepository,
+            List<ArtifactRepository> remoteRepositories,
+            String defaultArtifactType) {
         this.factory = factory;
         this.resolver = resolver;
         this.localRepository = localRepository;
@@ -89,10 +89,13 @@ public class ArtifactLocatorStrategy
      * @param defaultArtifactType default artifact type.
      * @param defaultClassifier default classifier.
      */
-    public ArtifactLocatorStrategy( ArtifactFactory factory, ArtifactResolver resolver,
-                                    ArtifactRepository localRepository, List<ArtifactRepository> remoteRepositories,
-                                    String defaultArtifactType, String defaultClassifier )
-    {
+    public ArtifactLocatorStrategy(
+            ArtifactFactory factory,
+            ArtifactResolver resolver,
+            ArtifactRepository localRepository,
+            List<ArtifactRepository> remoteRepositories,
+            String defaultArtifactType,
+            String defaultClassifier) {
         this.factory = factory;
         this.resolver = resolver;
         this.localRepository = localRepository;
@@ -109,85 +112,66 @@ public class ArtifactLocatorStrategy
      * @param messageHolder {@link MessageHolder}
      * @return location.
      */
-    public Location resolve( String locationSpecification, MessageHolder messageHolder )
-    {
-        String[] parts = locationSpecification.split( ":" );
+    public Location resolve(String locationSpecification, MessageHolder messageHolder) {
+        String[] parts = locationSpecification.split(":");
 
         Location location = null;
 
-        if ( parts.length > 2 )
-        {
+        if (parts.length > 2) {
             String groupId = parts[0];
             String artifactId = parts[1];
             String version = parts[2];
 
             String type = defaultArtifactType;
-            if ( parts.length > 3 )
-            {
-                if ( parts[3].trim().length() > 0 )
-                {
+            if (parts.length > 3) {
+                if (parts[3].trim().length() > 0) {
                     type = parts[3];
                 }
             }
 
             String classifier = defaultClassifier;
-            if ( parts.length > 4 )
-            {
+            if (parts.length > 4) {
                 classifier = parts[4];
             }
 
-            if ( parts.length > 5 )
-            {
-                messageHolder.newMessage().append( "Location specification has unused tokens: \'" );
+            if (parts.length > 5) {
+                messageHolder.newMessage().append("Location specification has unused tokens: \'");
 
-                for ( int i = 5; i < parts.length; i++ )
-                {
-                    messageHolder.append( ":" + parts[i] );
+                for (int i = 5; i < parts.length; i++) {
+                    messageHolder.append(":" + parts[i]);
                 }
             }
 
             Artifact artifact;
-            if ( classifier == null )
-            {
-                artifact = factory.createArtifact( groupId, artifactId, version, null, type );
-            }
-            else
-            {
-                artifact = factory.createArtifactWithClassifier( groupId, artifactId, version, type, classifier );
+            if (classifier == null) {
+                artifact = factory.createArtifact(groupId, artifactId, version, null, type);
+            } else {
+                artifact = factory.createArtifactWithClassifier(groupId, artifactId, version, type, classifier);
             }
 
-            try
-            {
-                resolver.resolve( artifact, remoteRepositories, localRepository );
+            try {
+                resolver.resolve(artifact, remoteRepositories, localRepository);
 
-                if ( artifact.getFile() != null )
-                {
-                    location = new ArtifactLocation( artifact, locationSpecification );
+                if (artifact.getFile() != null) {
+                    location = new ArtifactLocation(artifact, locationSpecification);
+                } else {
+                    messageHolder.addMessage(
+                            "Supposedly resolved artifact: " + artifact.getId() + " does not have an associated file.");
                 }
-                else
-                {
-                    messageHolder.addMessage( "Supposedly resolved artifact: " + artifact.getId()
-                        + " does not have an associated file." );
-                }
+            } catch (ArtifactResolutionException e) {
+                messageHolder.addMessage(
+                        "Failed to resolve artifact: " + artifact.getId() + " for location: " + locationSpecification,
+                        e);
+            } catch (ArtifactNotFoundException e) {
+                messageHolder.addMessage(
+                        "Failed to resolve artifact: " + artifact.getId() + " for location: " + locationSpecification,
+                        e);
             }
-            catch ( ArtifactResolutionException e )
-            {
-                messageHolder.addMessage( "Failed to resolve artifact: " + artifact.getId() + " for location: "
-                    + locationSpecification, e );
-            }
-            catch ( ArtifactNotFoundException e )
-            {
-                messageHolder.addMessage( "Failed to resolve artifact: " + artifact.getId() + " for location: "
-                    + locationSpecification, e );
-            }
-        }
-        else
-        {
-            messageHolder.addMessage( "Invalid artifact specification: \'" + locationSpecification
-                + "\'. Must contain at least three fields, separated by ':'." );
+        } else {
+            messageHolder.addMessage("Invalid artifact specification: \'" + locationSpecification
+                    + "\'. Must contain at least three fields, separated by ':'.");
         }
 
         return location;
     }
-
 }

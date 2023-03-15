@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.download;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.download;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.download;
 
 import java.io.File;
 import java.util.List;
@@ -29,8 +28,7 @@ import org.apache.maven.wagon.events.TransferListener;
  * The Download Manager interface.
  *
  */
-public interface DownloadManager
-{
+public interface DownloadManager {
     /**
      * The Role.
      */
@@ -42,8 +40,7 @@ public interface DownloadManager
      * @return {@link File}
      * @throws DownloadFailedException in case of exception.
      */
-    File download( String url, MessageHolder messageHolder )
-        throws DownloadFailedException;
+    File download(String url, MessageHolder messageHolder) throws DownloadFailedException;
 
     /**
      * @param url The URL.
@@ -52,7 +49,6 @@ public interface DownloadManager
      * @return {@link File}
      * @throws DownloadFailedException in case of exception.
      */
-    File download( String url, List<TransferListener> transferListeners, MessageHolder messageHolder )
-        throws DownloadFailedException;
-
+    File download(String url, List<TransferListener> transferListeners, MessageHolder messageHolder)
+            throws DownloadFailedException;
 }

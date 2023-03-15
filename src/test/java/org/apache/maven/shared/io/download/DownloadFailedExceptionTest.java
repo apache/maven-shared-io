@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.download;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,27 +16,22 @@ package org.apache.maven.shared.io.download;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.download;
 
 import junit.framework.TestCase;
 
-public class DownloadFailedExceptionTest
-    extends TestCase
-{
+public class DownloadFailedExceptionTest extends TestCase {
 
-    public void testShouldConstructWithUrlAndMessage()
-    {
-        new DownloadFailedException( "http://www.google.com", "can't find." );
+    public void testShouldConstructWithUrlAndMessage() {
+        new DownloadFailedException("http://www.google.com", "can't find.");
     }
 
-    public void testShouldConstructWithUrlMessageAndException()
-    {
-        new DownloadFailedException( "http://www.google.com", "can't find.", new NullPointerException() );
+    public void testShouldConstructWithUrlMessageAndException() {
+        new DownloadFailedException("http://www.google.com", "can't find.", new NullPointerException());
     }
 
-    public void testShouldRetrieveUrlFromConstructor()
-    {
+    public void testShouldRetrieveUrlFromConstructor() {
         String url = "http://www.google.com";
-        assertEquals( url, new DownloadFailedException( url, "can't find." ).getUrl() );
+        assertEquals(url, new DownloadFailedException(url, "can't find.").getUrl());
     }
-
 }

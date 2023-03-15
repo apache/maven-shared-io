@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,42 +16,35 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
+import junit.framework.TestCase;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
 
-import junit.framework.TestCase;
+public class ClasspathResourceLocatorStrategyTest extends TestCase {
 
-public class ClasspathResourceLocatorStrategyTest
-    extends TestCase
-{
-
-    public void testShouldConstructWithNoParams()
-    {
+    public void testShouldConstructWithNoParams() {
         new ClasspathResourceLocatorStrategy();
     }
 
-    public void testShouldConstructWithTempFileOptions()
-    {
-        new ClasspathResourceLocatorStrategy( "prefix.", ".suffix", true );
+    public void testShouldConstructWithTempFileOptions() {
+        new ClasspathResourceLocatorStrategy("prefix.", ".suffix", true);
     }
 
-    public void testShouldFailToResolveMissingClasspathResource()
-    {
+    public void testShouldFailToResolveMissingClasspathResource() {
         MessageHolder mh = new DefaultMessageHolder();
-        Location location = new ClasspathResourceLocatorStrategy().resolve( "/some/missing/path", mh );
+        Location location = new ClasspathResourceLocatorStrategy().resolve("/some/missing/path", mh);
 
-        assertNull( location );
-        assertEquals( 1, mh.size() );
+        assertNull(location);
+        assertEquals(1, mh.size());
     }
 
-    public void testShouldResolveExistingClasspathResourceWithoutPrecedingSlash()
-    {
+    public void testShouldResolveExistingClasspathResourceWithoutPrecedingSlash() {
         MessageHolder mh = new DefaultMessageHolder();
-        Location location = new ClasspathResourceLocatorStrategy().resolve( "META-INF/maven/test.properties", mh );
+        Location location = new ClasspathResourceLocatorStrategy().resolve("META-INF/maven/test.properties", mh);
 
-        assertNotNull( location );
-        assertEquals( 0, mh.size() );
+        assertNotNull(location);
+        assertEquals(0, mh.size());
     }
-
 }

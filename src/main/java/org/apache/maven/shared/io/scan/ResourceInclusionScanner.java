@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,22 +16,22 @@ package org.apache.maven.shared.io.scan;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import org.apache.maven.shared.io.scan.mapping.SourceMapping;
+package org.apache.maven.shared.io.scan;
 
 import java.io.File;
 import java.util.Set;
+
+import org.apache.maven.shared.io.scan.mapping.SourceMapping;
 
 /**
  * @author jdcasey
  * @version $Id$
  */
-public interface ResourceInclusionScanner
-{
+public interface ResourceInclusionScanner {
     /**
      * @param sourceMapping {@link SourceMapping}
      */
-    void addSourceMapping( SourceMapping sourceMapping );
+    void addSourceMapping(SourceMapping sourceMapping);
 
     /**
      * @param sourceDir {@link File}
@@ -41,6 +39,5 @@ public interface ResourceInclusionScanner
      * @return The included sources.
      * @throws InclusionScanException in case of an error.
      */
-    Set<File> getIncludedSources( File sourceDir, File targetDir )
-        throws InclusionScanException;
+    Set<File> getIncludedSources(File sourceDir, File targetDir) throws InclusionScanException;
 }

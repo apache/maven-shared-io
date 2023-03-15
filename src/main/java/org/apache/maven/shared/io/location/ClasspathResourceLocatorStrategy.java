@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.net.URL;
 
@@ -27,9 +26,7 @@ import org.apache.maven.shared.io.logging.MessageHolder;
  * classpath resource locator strategy.
  *
  */
-public class ClasspathResourceLocatorStrategy
-    implements LocatorStrategy
-{
+public class ClasspathResourceLocatorStrategy implements LocatorStrategy {
 
     private String tempFilePrefix = "location.";
 
@@ -40,44 +37,36 @@ public class ClasspathResourceLocatorStrategy
     /**
      * Create instance.
      */
-    public ClasspathResourceLocatorStrategy()
-    {
-    }
+    public ClasspathResourceLocatorStrategy() {}
 
     /**
      * @param tempFilePrefix Prefix.
      * @param tempFileSuffix Suffix.
      * @param tempFileDeleteOnExit delete on exit.
      */
-    public ClasspathResourceLocatorStrategy( String tempFilePrefix, String tempFileSuffix,
-                                             boolean tempFileDeleteOnExit )
-    {
+    public ClasspathResourceLocatorStrategy(
+            String tempFilePrefix, String tempFileSuffix, boolean tempFileDeleteOnExit) {
         this.tempFilePrefix = tempFilePrefix;
         this.tempFileSuffix = tempFileSuffix;
         this.tempFileDeleteOnExit = tempFileDeleteOnExit;
     }
 
     /** {@inheritDoc} */
-    public Location resolve( String locationSpecification, MessageHolder messageHolder )
-    {
+    public Location resolve(String locationSpecification, MessageHolder messageHolder) {
         ClassLoader cloader = Thread.currentThread().getContextClassLoader();
 
-        URL resource = cloader.getResource( locationSpecification );
+        URL resource = cloader.getResource(locationSpecification);
 
         Location location = null;
 
-        if ( resource != null )
-        {
-            location = new URLLocation( resource, locationSpecification, tempFilePrefix, tempFileSuffix,
-                                        tempFileDeleteOnExit );
-        }
-        else
-        {
-            messageHolder.addMessage( "Failed to resolve classpath resource: " + locationSpecification
-                + " from classloader: " + cloader );
+        if (resource != null) {
+            location = new URLLocation(
+                    resource, locationSpecification, tempFilePrefix, tempFileSuffix, tempFileDeleteOnExit);
+        } else {
+            messageHolder.addMessage(
+                    "Failed to resolve classpath resource: " + locationSpecification + " from classloader: " + cloader);
         }
 
         return location;
     }
-
 }

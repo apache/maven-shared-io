@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,121 +16,108 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import junit.framework.TestCase;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
 
-import junit.framework.TestCase;
-
 import static org.easymock.EasyMock.*;
 
-public class LocatorTest
-    extends TestCase
-{
+public class LocatorTest extends TestCase {
 
-    public void testShouldConstructWithNoParams()
-    {
+    public void testShouldConstructWithNoParams() {
         new Locator();
     }
 
-    public void testShouldConstructWithStrategyStackAndMessageHolder()
-    {
-        new Locator( Collections.<LocatorStrategy>emptyList(), new DefaultMessageHolder() );
+    public void testShouldConstructWithStrategyStackAndMessageHolder() {
+        new Locator(Collections.<LocatorStrategy>emptyList(), new DefaultMessageHolder());
     }
 
-    public void testShouldAllowModificationOfStrategiesAfterConstructionWithUnmodifiableStack()
-    {
-        Locator locator = new Locator( Collections.unmodifiableList( Collections.<LocatorStrategy>emptyList() ),
-                                       new DefaultMessageHolder() );
+    public void testShouldAllowModificationOfStrategiesAfterConstructionWithUnmodifiableStack() {
+        Locator locator = new Locator(
+                Collections.unmodifiableList(Collections.<LocatorStrategy>emptyList()), new DefaultMessageHolder());
 
-        locator.addStrategy( new FileLocatorStrategy() );
+        locator.addStrategy(new FileLocatorStrategy());
 
-        assertEquals( 1, locator.getStrategies().size() );
+        assertEquals(1, locator.getStrategies().size());
     }
 
-    public void testShouldRetrieveNonNullMessageHolderWhenConstructedWithoutParams()
-    {
-        assertNotNull( new Locator().getMessageHolder() );
+    public void testShouldRetrieveNonNullMessageHolderWhenConstructedWithoutParams() {
+        assertNotNull(new Locator().getMessageHolder());
     }
 
-    public void testSetStrategiesShouldClearAnyPreExistingStrategiesOut()
-    {
-        LocatorStrategy originalStrategy = createMock( LocatorStrategy.class );
-        LocatorStrategy replacementStrategy = createMock( LocatorStrategy.class );
+    public void testSetStrategiesShouldClearAnyPreExistingStrategiesOut() {
+        LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
+        LocatorStrategy replacementStrategy = createMock(LocatorStrategy.class);
 
-        replay( originalStrategy, replacementStrategy );
+        replay(originalStrategy, replacementStrategy);
 
         Locator locator = new Locator();
-        locator.addStrategy( originalStrategy );
+        locator.addStrategy(originalStrategy);
 
-        locator.setStrategies( Collections.singletonList( replacementStrategy ) );
+        locator.setStrategies(Collections.singletonList(replacementStrategy));
 
         List<LocatorStrategy> strategies = locator.getStrategies();
 
-        assertFalse( strategies.contains( originalStrategy ) );
-        assertTrue( strategies.contains( replacementStrategy ) );
+        assertFalse(strategies.contains(originalStrategy));
+        assertTrue(strategies.contains(replacementStrategy));
 
-        verify( originalStrategy, replacementStrategy );
+        verify(originalStrategy, replacementStrategy);
     }
 
-    public void testShouldRemovePreviouslyAddedStrategy()
-    {
-        LocatorStrategy originalStrategy = createMock( LocatorStrategy.class );
+    public void testShouldRemovePreviouslyAddedStrategy() {
+        LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
 
-        replay( originalStrategy );
+        replay(originalStrategy);
 
         Locator locator = new Locator();
-        locator.addStrategy( originalStrategy );
+        locator.addStrategy(originalStrategy);
 
         List<LocatorStrategy> strategies = locator.getStrategies();
 
-        assertTrue( strategies.contains( originalStrategy ) );
+        assertTrue(strategies.contains(originalStrategy));
 
-        locator.removeStrategy( originalStrategy );
+        locator.removeStrategy(originalStrategy);
 
         strategies = locator.getStrategies();
 
-        assertFalse( strategies.contains( originalStrategy ) );
+        assertFalse(strategies.contains(originalStrategy));
 
-        verify( originalStrategy );
+        verify(originalStrategy);
     }
 
-    public void testResolutionFallsThroughStrategyStackAndReturnsNullIfNotResolved()
-    {
+    public void testResolutionFallsThroughStrategyStackAndReturnsNullIfNotResolved() {
         List<LocatorStrategy> strategies = new ArrayList<LocatorStrategy>();
 
-        strategies.add( new LoggingLocatorStrategy() );
-        strategies.add( new LoggingLocatorStrategy() );
-        strategies.add( new LoggingLocatorStrategy() );
+        strategies.add(new LoggingLocatorStrategy());
+        strategies.add(new LoggingLocatorStrategy());
+        strategies.add(new LoggingLocatorStrategy());
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        Locator locator = new Locator( strategies, mh );
+        Locator locator = new Locator(strategies, mh);
 
-        Location location = locator.resolve( "some-specification" );
+        Location location = locator.resolve("some-specification");
 
-        assertNull( location );
+        assertNull(location);
 
-        assertEquals( 3, mh.size() );
+        assertEquals(3, mh.size());
     }
 
-    public static final class LoggingLocatorStrategy implements LocatorStrategy
-    {
+    public static final class LoggingLocatorStrategy implements LocatorStrategy {
 
         static int instanceCounter = 0;
 
         int counter = instanceCounter++;
 
-        public Location resolve( String locationSpecification, MessageHolder messageHolder )
-        {
-            messageHolder.addMessage( "resolve hit on strategy-" + (counter) );
+        public Location resolve(String locationSpecification, MessageHolder messageHolder) {
+            messageHolder.addMessage("resolve hit on strategy-" + (counter));
             return null;
         }
-
     }
-
 }

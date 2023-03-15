@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.download;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,14 +16,7 @@ package org.apache.maven.shared.io.download;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+package org.apache.maven.shared.io.download;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,512 +40,403 @@ import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.PlexusTestCase;
 
-public class DefaultDownloadManagerTest
-    extends PlexusTestCase
-{
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
+public class DefaultDownloadManagerTest extends PlexusTestCase {
 
     private WagonManager wagonManager;
 
     private Wagon wagon;
 
-    public void setUp()
-        throws Exception
-    {
+    public void setUp() throws Exception {
         super.setUp();
 
-        wagonManager = createMock( WagonManager.class );
-        wagon = createMock( Wagon.class );
+        wagonManager = createMock(WagonManager.class);
+        wagon = createMock(Wagon.class);
     }
 
-    public void testShouldConstructWithNoParamsAndHaveNonNullMessageHolder()
-    {
+    public void testShouldConstructWithNoParamsAndHaveNonNullMessageHolder() {
         new DefaultDownloadManager();
     }
 
-    public void testShouldConstructWithWagonManager()
-    {
-        replay( wagonManager );
+    public void testShouldConstructWithWagonManager() {
+        replay(wagonManager);
 
-        new DefaultDownloadManager( wagonManager );
+        new DefaultDownloadManager(wagonManager);
 
-        verify( wagonManager );
+        verify(wagonManager);
     }
 
-    public void testShouldLookupInstanceDefaultRoleHint()
-        throws Exception
-    {
-        lookup( DownloadManager.ROLE, DefaultDownloadManager.ROLE_HINT );
+    public void testShouldLookupInstanceDefaultRoleHint() throws Exception {
+        lookup(DownloadManager.ROLE, DefaultDownloadManager.ROLE_HINT);
     }
 
-    public void testShouldFailToDownloadMalformedURL()
-    {
-        replay( wagonManager );
+    public void testShouldFailToDownloadMalformedURL() {
+        replay(wagonManager);
 
-        DownloadManager mgr = new DefaultDownloadManager( wagonManager );
+        DownloadManager mgr = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            mgr.download( "://nothing.com/index.html", new DefaultMessageHolder() );
+        try {
+            mgr.download("://nothing.com/index.html", new DefaultMessageHolder());
 
-            fail( "Should not download with invalid URL." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( e.getMessage().indexOf( "invalid URL" ) > -1 );
+            fail("Should not download with invalid URL.");
+        } catch (DownloadFailedException e) {
+            assertTrue(e.getMessage().indexOf("invalid URL") > -1);
         }
 
-        verify( wagonManager );
+        verify(wagonManager);
     }
 
-    public void testShouldDownloadFromTempFileWithNoTransferListeners()
-        throws IOException, DownloadFailedException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldDownloadFromTempFileWithNoTransferListeners() throws IOException, DownloadFailedException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldDownloadFromTempFileTwiceAndUseCache()
-        throws IOException, DownloadFailedException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldDownloadFromTempFileTwiceAndUseCache() throws IOException, DownloadFailedException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        File first = downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        File first = downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        File second = downloadManager.download( tempFile.toURI().toASCIIString(), mh );
+        File second = downloadManager.download(tempFile.toURI().toASCIIString(), mh);
 
-        assertSame( first, second );
-        assertEquals( 1, mh.size() );
-        assertTrue( mh.render().indexOf( "Using cached" ) > -1 );
+        assertSame(first, second);
+        assertEquals(1, mh.size());
+        assertTrue(mh.render().indexOf("Using cached") > -1);
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldDownloadFromTempFileWithOneTransferListener()
-        throws IOException, DownloadFailedException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldDownloadFromTempFileWithOneTransferListener() throws IOException, DownloadFailedException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
 
-        TransferListener transferListener = createMock( TransferListener.class );
+        TransferListener transferListener = createMock(TransferListener.class);
 
-        wagon.addTransferListener( transferListener );
+        wagon.addTransferListener(transferListener);
 
-        wagon.removeTransferListener( transferListener );
+        wagon.removeTransferListener(transferListener);
 
-        replay( wagon, wagonManager, transferListener );
+        replay(wagon, wagonManager, transferListener);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        downloadManager.download( tempFile.toURI().toASCIIString(), Collections.singletonList( transferListener ),
-                                  new DefaultMessageHolder() );
+        downloadManager.download(
+                tempFile.toURI().toASCIIString(),
+                Collections.singletonList(transferListener),
+                new DefaultMessageHolder());
 
-        verify( wagon, wagonManager, transferListener );
+        verify(wagon, wagonManager, transferListener);
     }
 
-    public void testShouldFailToDownloadWhenWagonProtocolNotFound()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldFailToDownloadWhenWagonProtocolNotFound() throws IOException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonManagerGetException( new UnsupportedProtocolException( "not supported" ) );
+        setupMocksWithWagonManagerGetException(new UnsupportedProtocolException("not supported"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-            fail( "should have failed to retrieve wagon." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "UnsupportedProtocolException" ) > -1 );
+            fail("should have failed to retrieve wagon.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).indexOf("UnsupportedProtocolException") > -1);
         }
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldFailToDownloadWhenWagonConnectThrowsConnectionException()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldFailToDownloadWhenWagonConnectThrowsConnectionException() throws IOException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonConnectionException( new ConnectionException( "connect error" ) );
+        setupMocksWithWagonConnectionException(new ConnectionException("connect error"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-            fail( "should have failed to connect wagon." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "ConnectionException" ) > -1 );
+            fail("should have failed to connect wagon.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).indexOf("ConnectionException") > -1);
         }
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldFailToDownloadWhenWagonConnectThrowsAuthenticationException()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldFailToDownloadWhenWagonConnectThrowsAuthenticationException() throws IOException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonConnectionException( new AuthenticationException( "bad credentials" ) );
+        setupMocksWithWagonConnectionException(new AuthenticationException("bad credentials"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-            fail( "should have failed to connect wagon." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "AuthenticationException" ) > -1 );
+            fail("should have failed to connect wagon.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).indexOf("AuthenticationException") > -1);
         }
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldFailToDownloadWhenWagonGetThrowsTransferFailedException()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldFailToDownloadWhenWagonGetThrowsTransferFailedException() throws IOException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonGetException( new TransferFailedException( "bad transfer" ) );
+        setupMocksWithWagonGetException(new TransferFailedException("bad transfer"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-            fail( "should have failed to get resource." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "TransferFailedException" ) > -1 );
+            fail("should have failed to get resource.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).indexOf("TransferFailedException") > -1);
         }
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldFailToDownloadWhenWagonGetThrowsResourceDoesNotExistException()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldFailToDownloadWhenWagonGetThrowsResourceDoesNotExistException() throws IOException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonGetException( new ResourceDoesNotExistException( "bad resource" ) );
+        setupMocksWithWagonGetException(new ResourceDoesNotExistException("bad resource"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-            fail( "should have failed to get resource." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "ResourceDoesNotExistException" ) > -1 );
+            fail("should have failed to get resource.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).indexOf("ResourceDoesNotExistException") > -1);
         }
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    public void testShouldFailToDownloadWhenWagonGetThrowsAuthorizationException()
-        throws IOException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+    public void testShouldFailToDownloadWhenWagonGetThrowsAuthorizationException() throws IOException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonGetException( new AuthorizationException( "bad transfer" ) );
+        setupMocksWithWagonGetException(new AuthorizationException("bad transfer"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
-        try
-        {
-            downloadManager.download( tempFile.toURI().toASCIIString(), new DefaultMessageHolder() );
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
 
-            fail( "should have failed to get resource." );
-        }
-        catch ( DownloadFailedException e )
-        {
-            assertTrue( ExceptionUtils.getStackTrace( e ).indexOf( "AuthorizationException" ) > -1 );
+            fail("should have failed to get resource.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).indexOf("AuthorizationException") > -1);
         }
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
     public void testShouldFailToDownloadWhenWagonDisconnectThrowsConnectionException()
-        throws IOException, DownloadFailedException
-    {
-        File tempFile = Files.createTempFile( "download-source", "test" ).toFile();
+            throws IOException, DownloadFailedException {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
 
-        setupMocksWithWagonDisconnectException( new ConnectionException( "not connected" ) );
+        setupMocksWithWagonDisconnectException(new ConnectionException("not connected"));
 
-        replay( wagon, wagonManager );
+        replay(wagon, wagonManager);
 
-        DownloadManager downloadManager = new DefaultDownloadManager( wagonManager );
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
         MessageHolder mh = new DefaultMessageHolder();
 
-        downloadManager.download( tempFile.toURI().toASCIIString(), mh );
+        downloadManager.download(tempFile.toURI().toASCIIString(), mh);
 
-        assertTrue( mh.render().indexOf( "ConnectionException" ) > -1 );
+        assertTrue(mh.render().indexOf("ConnectionException") > -1);
 
-        verify( wagon, wagonManager );
+        verify(wagon, wagonManager);
     }
 
-    private void setupDefaultMockConfiguration()
-    {
-        try
-        {
-            expect( wagonManager.getWagon( "file" ) ).andReturn( wagon );
-        }
-        catch ( UnsupportedProtocolException e )
-        {
-            fail( "This shouldn't happen!!" );
+    private void setupDefaultMockConfiguration() {
+        try {
+            expect(wagonManager.getWagon("file")).andReturn(wagon);
+        } catch (UnsupportedProtocolException e) {
+            fail("This shouldn't happen!!");
         }
 
-        expect( wagonManager.getAuthenticationInfo( anyString() ) ).andReturn( null );
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
 
-        expect( wagonManager.getProxy( anyString() ) ).andReturn( null );
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
 
-        try
-        {
-            wagon.connect( anyObject( Repository.class ) , anyObject( AuthenticationInfo.class ), anyObject( ProxyInfo.class ) );
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthenticationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthenticationException e) {
+            fail("This shouldn't happen!!");
         }
 
-        try
-        {
-            wagon.get( anyString(), anyObject( File.class ) );
-        }
-        catch ( TransferFailedException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( ResourceDoesNotExistException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthorizationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.get(anyString(), anyObject(File.class));
+        } catch (TransferFailedException e) {
+            fail("This shouldn't happen!!");
+        } catch (ResourceDoesNotExistException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthorizationException e) {
+            fail("This shouldn't happen!!");
         }
 
-        try
-        {
+        try {
             wagon.disconnect();
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
         }
     }
 
-    private void setupMocksWithWagonManagerGetException( Throwable error )
-    {
-        try
-        {
-            expect( wagonManager.getWagon( "file" ) ).andThrow( error );
-        }
-        catch ( UnsupportedProtocolException e )
-        {
-            fail( "This shouldn't happen!!" );
+    private void setupMocksWithWagonManagerGetException(Throwable error) {
+        try {
+            expect(wagonManager.getWagon("file")).andThrow(error);
+        } catch (UnsupportedProtocolException e) {
+            fail("This shouldn't happen!!");
         }
     }
 
-    private void setupMocksWithWagonConnectionException( Throwable error )
-    {
-        try
-        {
-            expect( wagonManager.getWagon( "file" ) ).andReturn( wagon );
-        }
-        catch ( UnsupportedProtocolException e )
-        {
-            fail( "This shouldn't happen!!" );
+    private void setupMocksWithWagonConnectionException(Throwable error) {
+        try {
+            expect(wagonManager.getWagon("file")).andReturn(wagon);
+        } catch (UnsupportedProtocolException e) {
+            fail("This shouldn't happen!!");
         }
 
-        expect( wagonManager.getAuthenticationInfo( anyString() ) ).andReturn( null );
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
 
-        expect( wagonManager.getProxy( anyString() ) ).andReturn( null );
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
 
-        try
-        {
-            wagon.connect( anyObject( Repository.class ) , anyObject( AuthenticationInfo.class ), anyObject( ProxyInfo.class ) );
-            expectLastCall().andThrow( error );
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthenticationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+            expectLastCall().andThrow(error);
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthenticationException e) {
+            fail("This shouldn't happen!!");
         }
     }
 
-    private void setupMocksWithWagonGetException( Throwable error )
-    {
-        try
-        {
-            expect( wagonManager.getWagon( "file" ) ).andReturn( wagon );
-        }
-        catch ( UnsupportedProtocolException e )
-        {
-            fail( "This shouldn't happen!!" );
+    private void setupMocksWithWagonGetException(Throwable error) {
+        try {
+            expect(wagonManager.getWagon("file")).andReturn(wagon);
+        } catch (UnsupportedProtocolException e) {
+            fail("This shouldn't happen!!");
         }
 
-        expect( wagonManager.getAuthenticationInfo( anyString() ) ).andReturn( null );
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
 
-        expect( wagonManager.getProxy( anyString() ) ).andReturn( null );
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
 
-        try
-        {
-            wagon.connect( anyObject( Repository.class ) , anyObject( AuthenticationInfo.class ), anyObject( ProxyInfo.class ) );
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthenticationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthenticationException e) {
+            fail("This shouldn't happen!!");
         }
 
-        try
-        {
-            wagon.get( anyString(), anyObject( File.class ) );
-            expectLastCall().andThrow( error );
-        }
-        catch ( TransferFailedException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( ResourceDoesNotExistException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthorizationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.get(anyString(), anyObject(File.class));
+            expectLastCall().andThrow(error);
+        } catch (TransferFailedException e) {
+            fail("This shouldn't happen!!");
+        } catch (ResourceDoesNotExistException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthorizationException e) {
+            fail("This shouldn't happen!!");
         }
 
-        try
-        {
+        try {
             wagon.disconnect();
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
         }
     }
 
-    private void setupMocksWithWagonDisconnectException( Throwable error )
-    {
-        try
-        {
-            expect( wagonManager.getWagon( "file" ) ).andReturn( wagon );
-        }
-        catch ( UnsupportedProtocolException e )
-        {
-            fail( "This shouldn't happen!!" );
+    private void setupMocksWithWagonDisconnectException(Throwable error) {
+        try {
+            expect(wagonManager.getWagon("file")).andReturn(wagon);
+        } catch (UnsupportedProtocolException e) {
+            fail("This shouldn't happen!!");
         }
 
-        expect( wagonManager.getAuthenticationInfo( anyString() ) ).andReturn( null );
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
 
-        expect( wagonManager.getProxy( anyString() ) ).andReturn( null );
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
 
-        try
-        {
-            wagon.connect( anyObject( Repository.class ) , anyObject( AuthenticationInfo.class ), anyObject( ProxyInfo.class ) );
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthenticationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthenticationException e) {
+            fail("This shouldn't happen!!");
         }
 
-        try
-        {
-            wagon.get( anyString(), anyObject( File.class ) );
-        }
-        catch ( TransferFailedException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( ResourceDoesNotExistException e )
-        {
-            fail( "This shouldn't happen!!" );
-        }
-        catch ( AuthorizationException e )
-        {
-            fail( "This shouldn't happen!!" );
+        try {
+            wagon.get(anyString(), anyObject(File.class));
+        } catch (TransferFailedException e) {
+            fail("This shouldn't happen!!");
+        } catch (ResourceDoesNotExistException e) {
+            fail("This shouldn't happen!!");
+        } catch (AuthorizationException e) {
+            fail("This shouldn't happen!!");
         }
 
-        try
-        {
+        try {
             wagon.disconnect();
-            expectLastCall().andThrow( error );
-        }
-        catch ( ConnectionException e )
-        {
-            fail( "This shouldn't happen!!" );
+            expectLastCall().andThrow(error);
+        } catch (ConnectionException e) {
+            fail("This shouldn't happen!!");
         }
     }
 }

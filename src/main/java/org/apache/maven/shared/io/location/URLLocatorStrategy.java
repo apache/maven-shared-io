@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.location;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.location;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.location;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,11 +25,8 @@ import org.apache.maven.shared.io.logging.MessageHolder;
 
 /**
  * URL Locator Strategy.
- *
  */
-public class URLLocatorStrategy
-    implements LocatorStrategy
-{
+public class URLLocatorStrategy implements LocatorStrategy {
 
     private String tempFilePrefix = "location.";
 
@@ -41,40 +37,32 @@ public class URLLocatorStrategy
     /**
      * Create instance.
      */
-    public URLLocatorStrategy()
-    {
-    }
+    public URLLocatorStrategy() {}
 
     /**
      * @param tempFilePrefix prefix.
      * @param tempFileSuffix suffix.
      * @param tempFileDeleteOnExit delete on exit.
      */
-    public URLLocatorStrategy( String tempFilePrefix, String tempFileSuffix, boolean tempFileDeleteOnExit )
-    {
+    public URLLocatorStrategy(String tempFilePrefix, String tempFileSuffix, boolean tempFileDeleteOnExit) {
         this.tempFilePrefix = tempFilePrefix;
         this.tempFileSuffix = tempFileSuffix;
         this.tempFileDeleteOnExit = tempFileDeleteOnExit;
     }
 
     /** {@inheritDoc} */
-    public Location resolve( String locationSpecification, MessageHolder messageHolder )
-    {
+    public Location resolve(String locationSpecification, MessageHolder messageHolder) {
         Location location = null;
 
-        try
-        {
-            URL url = new URL( locationSpecification );
+        try {
+            URL url = new URL(locationSpecification);
 
-            location = new URLLocation( url, locationSpecification, tempFilePrefix, tempFileSuffix,
-                                        tempFileDeleteOnExit );
-        }
-        catch ( MalformedURLException e )
-        {
-            messageHolder.addMessage( "Building URL from location: " + locationSpecification, e );
+            location =
+                    new URLLocation(url, locationSpecification, tempFilePrefix, tempFileSuffix, tempFileDeleteOnExit);
+        } catch (MalformedURLException e) {
+            messageHolder.addMessage("Building URL from location: " + locationSpecification, e);
         }
 
         return location;
     }
-
 }

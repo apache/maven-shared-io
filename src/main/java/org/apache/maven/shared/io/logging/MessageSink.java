@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.logging;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,38 +16,36 @@ package org.apache.maven.shared.io.logging;
  * specific language governing permissions and limitations
  * under the License.
  */
-
+package org.apache.maven.shared.io.logging;
 
 /**
  * Message Sink interface.
  *
  */
-public interface MessageSink
-{
+public interface MessageSink {
 
     /**
      * @param message The message.
      */
-    void debug( String message );
+    void debug(String message);
 
     /**
      * @param message The message.
      */
-    void info( String message );
+    void info(String message);
 
     /**
      * @param message The message.
      */
-    void warning( String message );
+    void warning(String message);
 
     /**
      * @param message The message.
      */
-    void error( String message );
+    void error(String message);
 
     /**
      * @param message The message.
      */
-    void severe( String message );
-
+    void severe(String message);
 }

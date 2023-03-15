@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan.mapping;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,9 +16,7 @@ package org.apache.maven.shared.io.scan.mapping;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+package org.apache.maven.shared.io.scan.mapping;
 
 import java.io.File;
 import java.util.HashSet;
@@ -29,101 +25,96 @@ import java.util.Set;
 import org.apache.maven.shared.io.scan.InclusionScanException;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * @author jdcasey
  */
-public class SuffixMappingTest
-{
+public class SuffixMappingTest {
     @Test
-    public void testShouldReturnSingleClassFileForSingleJavaFile()
-        throws InclusionScanException
-    {
+    public void testShouldReturnSingleClassFileForSingleJavaFile() throws InclusionScanException {
         String base = "path/to/file";
 
-        File basedir = new File( "." );
+        File basedir = new File(".");
 
-        SuffixMapping mapping = new SuffixMapping( ".java", ".class" );
+        SuffixMapping mapping = new SuffixMapping(".java", ".class");
 
-        Set<File> results = mapping.getTargetFiles( basedir, base + ".java" );
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".java");
 
-        assertEquals( "Returned wrong number of target files.", 1, results.size() );
+        assertEquals("Returned wrong number of target files.", 1, results.size());
 
-        assertEquals( "Target file is wrong.", new File( basedir, base + ".class" ), results.iterator().next() );
+        assertEquals(
+                "Target file is wrong.",
+                new File(basedir, base + ".class"),
+                results.iterator().next());
     }
 
     @Test
-    public void testShouldNotReturnClassFileWhenSourceFileHasWrongSuffix()
-        throws InclusionScanException
-    {
+    public void testShouldNotReturnClassFileWhenSourceFileHasWrongSuffix() throws InclusionScanException {
         String base = "path/to/file";
 
-        File basedir = new File( "." );
+        File basedir = new File(".");
 
-        SuffixMapping mapping = new SuffixMapping( ".java", ".class" );
+        SuffixMapping mapping = new SuffixMapping(".java", ".class");
 
-        Set<File> results = mapping.getTargetFiles( basedir, base + ".xml" );
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".xml");
 
-        assertTrue( "Returned wrong number of target files.", results.isEmpty() );
+        assertTrue("Returned wrong number of target files.", results.isEmpty());
     }
 
     @Test
-    public void testShouldReturnOneClassFileAndOneXmlFileForSingleJavaFile()
-        throws InclusionScanException
-    {
+    public void testShouldReturnOneClassFileAndOneXmlFileForSingleJavaFile() throws InclusionScanException {
         String base = "path/to/file";
 
-        File basedir = new File( "." );
+        File basedir = new File(".");
 
         Set<String> targets = new HashSet<String>();
-        targets.add( ".class" );
-        targets.add( ".xml" );
+        targets.add(".class");
+        targets.add(".xml");
 
-        SuffixMapping mapping = new SuffixMapping( ".java", targets );
+        SuffixMapping mapping = new SuffixMapping(".java", targets);
 
-        Set<File> results = mapping.getTargetFiles( basedir, base + ".java" );
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".java");
 
-        assertEquals( "Returned wrong number of target files.", 2, results.size() );
+        assertEquals("Returned wrong number of target files.", 2, results.size());
 
-        assertTrue( "Targets do not contain class target.", results.contains( new File( basedir, base + ".class" ) ) );
+        assertTrue("Targets do not contain class target.", results.contains(new File(basedir, base + ".class")));
 
-        assertTrue( "Targets do not contain class target.", results.contains( new File( basedir, base + ".xml" ) ) );
+        assertTrue("Targets do not contain class target.", results.contains(new File(basedir, base + ".xml")));
     }
 
     @Test
-    public void testShouldReturnNoTargetFilesWhenSourceFileHasWrongSuffix()
-        throws InclusionScanException
-    {
+    public void testShouldReturnNoTargetFilesWhenSourceFileHasWrongSuffix() throws InclusionScanException {
         String base = "path/to/file";
 
-        File basedir = new File( "." );
+        File basedir = new File(".");
 
         Set<String> targets = new HashSet<String>();
-        targets.add( ".class" );
-        targets.add( ".xml" );
+        targets.add(".class");
+        targets.add(".xml");
 
-        SuffixMapping mapping = new SuffixMapping( ".java", targets );
+        SuffixMapping mapping = new SuffixMapping(".java", targets);
 
-        Set<File> results = mapping.getTargetFiles( basedir, base + ".apt" );
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".apt");
 
-        assertTrue( "Returned wrong number of target files.", results.isEmpty() );
+        assertTrue("Returned wrong number of target files.", results.isEmpty());
     }
 
     @Test
-    public void testSingleTargetMapper()
-        throws InclusionScanException
-    {
+    public void testSingleTargetMapper() throws InclusionScanException {
         String base = "path/to/file";
 
-        File basedir = new File( "target/" );
+        File basedir = new File("target/");
 
-        SingleTargetMapping mapping = new SingleTargetMapping( ".cs", "/foo" );
+        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "/foo");
 
-        Set<File> results = mapping.getTargetFiles( basedir, base + ".apt" );
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".apt");
 
-        assertTrue( results.isEmpty() );
+        assertTrue(results.isEmpty());
 
-        results = mapping.getTargetFiles( basedir, base + ".cs" );
+        results = mapping.getTargetFiles(basedir, base + ".cs");
 
-        assertEquals( 1, results.size() );
+        assertEquals(1, results.size());
     }
 }

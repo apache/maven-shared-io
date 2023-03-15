@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan.mapping;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.apache.maven.shared.io.scan.mapping;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.scan.mapping;
 
 import java.io.File;
 import java.util.Collections;
@@ -28,9 +27,7 @@ import java.util.Set;
  * @author jdcasey
  * @version $Id$
  */
-public final class SuffixMapping
-    implements SourceMapping
-{
+public final class SuffixMapping implements SourceMapping {
     private final String sourceSuffix;
 
     private final Set<String> targetSuffixes;
@@ -39,36 +36,31 @@ public final class SuffixMapping
      * @param sourceSuffix source suffix.
      * @param targetSuffix target suffix.
      */
-    public SuffixMapping( String sourceSuffix, String targetSuffix )
-    {
+    public SuffixMapping(String sourceSuffix, String targetSuffix) {
         this.sourceSuffix = sourceSuffix;
 
-        this.targetSuffixes = Collections.singleton( targetSuffix );
+        this.targetSuffixes = Collections.singleton(targetSuffix);
     }
 
     /**
      * @param sourceSuffix source suffix.
      * @param targetSuffixes target suffixes.
      */
-    public SuffixMapping( String sourceSuffix, Set<String> targetSuffixes )
-    {
+    public SuffixMapping(String sourceSuffix, Set<String> targetSuffixes) {
         this.sourceSuffix = sourceSuffix;
 
         this.targetSuffixes = targetSuffixes;
     }
 
     /** {@inheritDoc} */
-    public Set<File> getTargetFiles( File targetDir, String source )
-    {
+    public Set<File> getTargetFiles(File targetDir, String source) {
         Set<File> targetFiles = new HashSet<File>();
 
-        if ( source.endsWith( sourceSuffix ) )
-        {
-            String base = source.substring( 0, source.length() - sourceSuffix.length() );
+        if (source.endsWith(sourceSuffix)) {
+            String base = source.substring(0, source.length() - sourceSuffix.length());
 
-            for ( String suffix : targetSuffixes )
-            {
-                targetFiles.add( new File( targetDir, base + suffix ) );
+            for (String suffix : targetSuffixes) {
+                targetFiles.add(new File(targetDir, base + suffix));
             }
         }
 

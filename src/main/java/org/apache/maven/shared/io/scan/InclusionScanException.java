@@ -1,5 +1,3 @@
-package org.apache.maven.shared.io.scan;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,28 +16,25 @@ package org.apache.maven.shared.io.scan;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.maven.shared.io.scan;
 
 /**
  * @author jdcasey
  * @version $Id$
  */
-public class InclusionScanException
-    extends Exception
-{
+public class InclusionScanException extends Exception {
     /**
      * @param message The message.
      */
-    public InclusionScanException( String message )
-    {
-        super( message );
+    public InclusionScanException(String message) {
+        super(message);
     }
 
     /**
      * @param message The message.
      * @param cause The cause of the error.
      */
-    public InclusionScanException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public InclusionScanException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
