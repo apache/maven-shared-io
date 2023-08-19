@@ -82,7 +82,7 @@ public class StaleResourceScanner extends AbstractResourceInclusionScanner {
 
         String[] potentialIncludes = scanForSources(sourceDir, sourceIncludes, sourceExcludes);
 
-        Set<File> matchingSources = new HashSet<File>();
+        Set<File> matchingSources = new HashSet<>();
 
         for (int i = 0; i < potentialIncludes.length; i++) {
             String path = potentialIncludes[i];

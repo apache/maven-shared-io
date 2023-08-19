@@ -54,7 +54,7 @@ public class DefaultDownloadManager implements DownloadManager {
 
     private WagonManager wagonManager;
 
-    private Map<String, File> cache = new HashMap<String, File>();
+    private Map<String, File> cache = new HashMap<>();
 
     /**
      * Create an instance of the {@code DefaultDownloadManager}.

@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class DefaultMessageHolder implements MessageHolder {
 
-    private List<Message> messages = new ArrayList<Message>();
+    private List<Message> messages = new ArrayList<>();
 
     private Message currentMessage;
 

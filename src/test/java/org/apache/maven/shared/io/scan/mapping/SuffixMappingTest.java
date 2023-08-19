@@ -69,7 +69,7 @@ public class SuffixMappingTest {
 
         File basedir = new File(".");
 
-        Set<String> targets = new HashSet<String>();
+        Set<String> targets = new HashSet<>();
         targets.add(".class");
         targets.add(".xml");
 
@@ -90,7 +90,7 @@ public class SuffixMappingTest {
 
         File basedir = new File(".");
 
-        Set<String> targets = new HashSet<String>();
+        Set<String> targets = new HashSet<>();
         targets.add(".class");
         targets.add(".xml");
 
