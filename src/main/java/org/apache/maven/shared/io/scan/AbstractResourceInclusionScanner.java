@@ -32,7 +32,7 @@ import org.apache.maven.shared.utils.io.DirectoryScanner;
  * @version $Id$
  */
 public abstract class AbstractResourceInclusionScanner implements ResourceInclusionScanner {
-    private final List<SourceMapping> sourceMappings = new ArrayList<SourceMapping>();
+    private final List<SourceMapping> sourceMappings = new ArrayList<>();
 
     /** {@inheritDoc} */
     public final void addSourceMapping(SourceMapping sourceMapping) {

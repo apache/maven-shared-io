@@ -92,7 +92,7 @@ public class LocatorTest extends TestCase {
     }
 
     public void testResolutionFallsThroughStrategyStackAndReturnsNullIfNotResolved() {
-        List<LocatorStrategy> strategies = new ArrayList<LocatorStrategy>();
+        List<LocatorStrategy> strategies = new ArrayList<>();
 
         strategies.add(new LoggingLocatorStrategy());
         strategies.add(new LoggingLocatorStrategy());
