@@ -62,7 +62,7 @@
   </distributionManagement>
 
   <properties>
-    <mavenVersion>3.0</mavenVersion>
+    <mavenVersion>3.8.1</mavenVersion>
     <javaVersion>8</javaVersion>
     <checkstyle.violation.ignore>RedundantThrows,NewlineAtEndOfFile,ParameterNumber,MethodLength,FileLength,JavadocType</checkstyle.violation.ignore>
     <project.build.outputTimestamp>2020-04-04T09:03:59Z</project.build.outputTimestamp>
