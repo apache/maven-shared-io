@@ -26,10 +26,5 @@ jobs:
     name: Verify
     uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v4
     with:
-      ff-run: false
-      ff-site-run: false
-      jdk-matrix: '[ "21" ]'
-      maven-matrix: '[ "3.9.9", "4.0.0-rc-2" ]'
-      verify-fail-fast: false
-      verify-goal: 'verify'
-
+      maven4-enabled: true
+      maven4-version: '4.0.0-rc-2' # only needed if you want to override default
