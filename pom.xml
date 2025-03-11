@@ -136,4 +136,9 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <profile>
+      <id>run-its</id>
+    </profile>
+  </profiles>
 </project>
