@@ -48,7 +48,7 @@
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/apache/maven-maven-shared-io/issues</url>
+    <url>https://github.com/apache/maven-shared-io/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
