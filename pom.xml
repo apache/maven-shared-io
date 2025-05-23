@@ -47,8 +47,8 @@
     <url>https://github.com/apache/maven-shared-io/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.apache.org/jira/projects/MSHARED</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/maven-maven-shared-io/issues</url>
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
