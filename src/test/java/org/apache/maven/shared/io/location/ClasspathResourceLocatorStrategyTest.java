@@ -18,20 +18,25 @@
  */
 package org.apache.maven.shared.io.location;
 
-import junit.framework.TestCase;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
+import org.junit.jupiter.api.Test;
 
-public class ClasspathResourceLocatorStrategyTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class ClasspathResourceLocatorStrategyTest {
+
+    @Test
     public void testShouldConstructWithNoParams() {
         new ClasspathResourceLocatorStrategy();
     }
 
+    @Test
     public void testShouldConstructWithTempFileOptions() {
         new ClasspathResourceLocatorStrategy("prefix.", ".suffix", true);
     }
 
+    @Test
     public void testShouldFailToResolveMissingClasspathResource() {
         MessageHolder mh = new DefaultMessageHolder();
         Location location = new ClasspathResourceLocatorStrategy().resolve("/some/missing/path", mh);
@@ -40,6 +45,7 @@ public class ClasspathResourceLocatorStrategyTest extends TestCase {
         assertEquals(1, mh.size());
     }
 
+    @Test
     public void testShouldResolveExistingClasspathResourceWithoutPrecedingSlash() {
         MessageHolder mh = new DefaultMessageHolder();
         Location location = new ClasspathResourceLocatorStrategy().resolve("META-INF/maven/test.properties", mh);

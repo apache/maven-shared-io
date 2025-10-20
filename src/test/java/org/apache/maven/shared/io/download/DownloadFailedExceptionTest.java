@@ -18,18 +18,23 @@
  */
 package org.apache.maven.shared.io.download;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 
-public class DownloadFailedExceptionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+public class DownloadFailedExceptionTest {
+
+    @Test
     public void testShouldConstructWithUrlAndMessage() {
         new DownloadFailedException("http://www.google.com", "can't find.");
     }
 
+    @Test
     public void testShouldConstructWithUrlMessageAndException() {
         new DownloadFailedException("http://www.google.com", "can't find.", new NullPointerException());
     }
 
+    @Test
     public void testShouldRetrieveUrlFromConstructor() {
         String url = "http://www.google.com";
         assertEquals(url, new DownloadFailedException(url, "can't find.").getUrl());

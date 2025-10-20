@@ -22,15 +22,19 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.junit.jupiter.api.Test;
 
-public class ArtifactLocationTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
+public class ArtifactLocationTest {
+
+    @Test
     public void testShouldConstructFromTempFileSpecification() throws IOException {
         File f = Files.createTempFile("artifact-location.", ".test").toFile();
         f.deleteOnExit();
@@ -51,6 +55,7 @@ public class ArtifactLocationTest extends TestCase {
         assertSame(f, location.getFile());
     }
 
+    @Test
     public void testShouldRead() throws IOException {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();

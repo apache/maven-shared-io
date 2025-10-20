@@ -25,12 +25,15 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Test;
 
-public class FileLocationTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class FileLocationTest {
+
+    @Test
     public void testShouldConstructWithFileThenRetrieveSameFile() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -41,6 +44,7 @@ public class FileLocationTest extends TestCase {
         assertEquals(file.getAbsolutePath(), location.getSpecification());
     }
 
+    @Test
     public void testShouldReadFileContentsUsingByteBuffer() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -59,6 +63,7 @@ public class FileLocationTest extends TestCase {
         assertEquals(testStr, new String(buffer.array(), "US-ASCII"));
     }
 
+    @Test
     public void testShouldReadFileContentsUsingStream() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -79,6 +84,7 @@ public class FileLocationTest extends TestCase {
         }
     }
 
+    @Test
     public void testShouldReadFileContentsUsingByteArray() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -97,6 +103,7 @@ public class FileLocationTest extends TestCase {
         assertEquals(testStr, new String(buffer, "US-ASCII"));
     }
 
+    @Test
     public void testShouldReadThenClose() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -117,6 +124,7 @@ public class FileLocationTest extends TestCase {
         location.close();
     }
 
+    @Test
     public void testShouldOpenThenFailToSetFile() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -133,6 +141,7 @@ public class FileLocationTest extends TestCase {
         }
     }
 
+    @Test
     public void testShouldConstructWithoutFileThenSetFileThenOpen() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
@@ -143,6 +152,7 @@ public class FileLocationTest extends TestCase {
         location.open();
     }
 
+    @Test
     public void testShouldConstructWithLocationThenRetrieveEquivalentFile() throws IOException {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();

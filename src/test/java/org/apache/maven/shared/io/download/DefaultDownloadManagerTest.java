@@ -38,7 +38,8 @@ import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
-import org.codehaus.plexus.PlexusTestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
@@ -47,24 +48,29 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class DefaultDownloadManagerTest extends PlexusTestCase {
+public class DefaultDownloadManagerTest {
 
     private WagonManager wagonManager;
 
     private Wagon wagon;
 
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
-
         wagonManager = createMock(WagonManager.class);
         wagon = createMock(Wagon.class);
     }
 
+    @Test
     public void testShouldConstructWithNoParamsAndHaveNonNullMessageHolder() {
         new DefaultDownloadManager();
     }
 
+    @Test
     public void testShouldConstructWithWagonManager() {
         replay(wagonManager);
 
@@ -73,10 +79,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagonManager);
     }
 
-    public void testShouldLookupInstanceDefaultRoleHint() throws Exception {
-        lookup(DownloadManager.ROLE, DefaultDownloadManager.ROLE_HINT);
-    }
-
+    @Test
     public void testShouldFailToDownloadMalformedURL() {
         replay(wagonManager);
 
@@ -93,6 +96,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagonManager);
     }
 
+    @Test
     public void testShouldDownloadFromTempFileWithNoTransferListeners() throws IOException, DownloadFailedException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -108,6 +112,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldDownloadFromTempFileTwiceAndUseCache() throws IOException, DownloadFailedException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -131,6 +136,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldDownloadFromTempFileWithOneTransferListener() throws IOException, DownloadFailedException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -155,6 +161,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager, transferListener);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonProtocolNotFound() throws IOException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -176,6 +183,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonConnectThrowsConnectionException() throws IOException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -197,6 +205,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonConnectThrowsAuthenticationException() throws IOException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -218,6 +227,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonGetThrowsTransferFailedException() throws IOException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -239,6 +249,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonGetThrowsResourceDoesNotExistException() throws IOException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -260,6 +271,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonGetThrowsAuthorizationException() throws IOException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();
         tempFile.deleteOnExit();
@@ -281,6 +293,7 @@ public class DefaultDownloadManagerTest extends PlexusTestCase {
         verify(wagon, wagonManager);
     }
 
+    @Test
     public void testShouldFailToDownloadWhenWagonDisconnectThrowsConnectionException()
             throws IOException, DownloadFailedException {
         File tempFile = Files.createTempFile("download-source", "test").toFile();

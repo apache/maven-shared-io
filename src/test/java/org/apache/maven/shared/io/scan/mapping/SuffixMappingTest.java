@@ -23,10 +23,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.maven.shared.io.scan.InclusionScanException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author jdcasey
@@ -42,12 +42,9 @@ public class SuffixMappingTest {
 
         Set<File> results = mapping.getTargetFiles(basedir, base + ".java");
 
-        assertEquals("Returned wrong number of target files.", 1, results.size());
+        assertEquals(1, results.size(), "Returned wrong number of target files.");
 
-        assertEquals(
-                "Target file is wrong.",
-                new File(basedir, base + ".class"),
-                results.iterator().next());
+        assertEquals(new File(basedir, base + ".class"), results.iterator().next(), "Target file is wrong.");
     }
 
     @Test
@@ -60,7 +57,7 @@ public class SuffixMappingTest {
 
         Set<File> results = mapping.getTargetFiles(basedir, base + ".xml");
 
-        assertTrue("Returned wrong number of target files.", results.isEmpty());
+        assertTrue(results.isEmpty(), "Returned wrong number of target files.");
     }
 
     @Test
@@ -77,11 +74,11 @@ public class SuffixMappingTest {
 
         Set<File> results = mapping.getTargetFiles(basedir, base + ".java");
 
-        assertEquals("Returned wrong number of target files.", 2, results.size());
+        assertEquals(2, results.size(), "Returned wrong number of target files.");
 
-        assertTrue("Targets do not contain class target.", results.contains(new File(basedir, base + ".class")));
+        assertTrue(results.contains(new File(basedir, base + ".class")), "Targets do not contain class target.");
 
-        assertTrue("Targets do not contain class target.", results.contains(new File(basedir, base + ".xml")));
+        assertTrue(results.contains(new File(basedir, base + ".xml")), "Targets do not contain class target.");
     }
 
     @Test
@@ -98,7 +95,7 @@ public class SuffixMappingTest {
 
         Set<File> results = mapping.getTargetFiles(basedir, base + ".apt");
 
-        assertTrue("Returned wrong number of target files.", results.isEmpty());
+        assertTrue(results.isEmpty(), "Returned wrong number of target files.");
     }
 
     @Test
