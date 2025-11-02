@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * @author dengliming
@@ -53,7 +54,7 @@ public class SimpleResourceInclusionScannerTest {
         Set results = simpleResourceInclusionScanner.getIncludedSources(baseDir, baseDir);
         assertTrue(results.size() > 0);
         Object file = results.iterator().next();
-        assertTrue(file instanceof File);
+        assertInstanceOf(File.class, file);
         assertEquals(f.getName(), ((File) file).getName());
     }
 }
