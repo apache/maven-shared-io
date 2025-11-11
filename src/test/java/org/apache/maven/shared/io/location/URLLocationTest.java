@@ -23,11 +23,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Test;
 
-public class URLLocationTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class URLLocationTest {
+
+    @Test
     public void testShouldConstructFromUrlAndTempFileSpecifications() throws IOException {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();
@@ -37,6 +40,7 @@ public class URLLocationTest extends TestCase {
         new URLLocation(url, f.getAbsolutePath(), "prefix.", ".suffix", true);
     }
 
+    @Test
     public void testShouldTransferFromTempFile() throws IOException {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();
@@ -49,6 +53,7 @@ public class URLLocationTest extends TestCase {
         assertFalse(f.equals(location.getFile()));
     }
 
+    @Test
     public void testShouldTransferFromTempFileThenRead() throws IOException {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();

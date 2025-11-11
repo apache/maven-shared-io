@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collections;
 
-import junit.framework.TestCase;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -32,10 +31,13 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ArtifactLocatorStrategyTest extends TestCase {
+public class ArtifactLocatorStrategyTest {
 
     private ArtifactFactory factory;
 
@@ -43,12 +45,14 @@ public class ArtifactLocatorStrategyTest extends TestCase {
 
     private ArtifactRepository localRepository;
 
+    @BeforeEach
     public void setUp() {
         factory = createMock(ArtifactFactory.class);
         resolver = createMock(ArtifactResolver.class);
         localRepository = createMock(ArtifactRepository.class);
     }
 
+    @Test
     public void testShouldConstructWithoutDefaultArtifactType() {
         replay(factory, resolver, localRepository);
 
@@ -57,6 +61,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository);
     }
 
+    @Test
     public void testShouldConstructWithDefaultArtifactType() {
         replay(factory, resolver, localRepository);
 
@@ -65,6 +70,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository);
     }
 
+    @Test
     public void testShouldFailToResolveSpecWithOneToken() {
         replay(factory, resolver, localRepository);
 
@@ -80,6 +86,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository);
     }
 
+    @Test
     public void testShouldFailToResolveSpecWithTwoTokens() {
         replay(factory, resolver, localRepository);
 
@@ -95,6 +102,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository);
     }
 
+    @Test
     public void testShouldResolveSpecWithThreeTokensUsingDefaultType() throws IOException {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
@@ -133,6 +141,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldResolveSpecWithThreeTokensUsingCustomizedDefaultType() throws IOException {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
@@ -171,6 +180,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldResolveSpecWithFourTokens() throws IOException {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
@@ -209,6 +219,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldResolveSpecWithFiveTokens() throws IOException {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
@@ -247,6 +258,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldResolveSpecWithFiveTokensAndEmptyTypeToken() throws IOException {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
@@ -285,6 +297,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldResolveSpecWithMoreThanFiveTokens() throws IOException {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
@@ -325,6 +338,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldNotResolveSpecToArtifactWithNullFile() throws IOException {
         Artifact artifact = createMock(Artifact.class);
 
@@ -360,6 +374,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldNotResolveWhenArtifactNotFoundExceptionThrown() throws IOException {
         Artifact artifact = createMock(Artifact.class);
 
@@ -407,6 +422,7 @@ public class ArtifactLocatorStrategyTest extends TestCase {
         verify(factory, resolver, localRepository, artifact);
     }
 
+    @Test
     public void testShouldNotResolveWhenArtifactResolutionExceptionThrown() throws IOException {
         Artifact artifact = createMock(Artifact.class);
 

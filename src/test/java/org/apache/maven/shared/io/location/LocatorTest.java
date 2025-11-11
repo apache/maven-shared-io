@@ -22,22 +22,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.TestCase;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
+import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class LocatorTest extends TestCase {
+public class LocatorTest {
 
+    @Test
     public void testShouldConstructWithNoParams() {
         new Locator();
     }
 
+    @Test
     public void testShouldConstructWithStrategyStackAndMessageHolder() {
         new Locator(Collections.<LocatorStrategy>emptyList(), new DefaultMessageHolder());
     }
 
+    @Test
     public void testShouldAllowModificationOfStrategiesAfterConstructionWithUnmodifiableStack() {
         Locator locator = new Locator(
                 Collections.unmodifiableList(Collections.<LocatorStrategy>emptyList()), new DefaultMessageHolder());
@@ -47,10 +51,12 @@ public class LocatorTest extends TestCase {
         assertEquals(1, locator.getStrategies().size());
     }
 
+    @Test
     public void testShouldRetrieveNonNullMessageHolderWhenConstructedWithoutParams() {
         assertNotNull(new Locator().getMessageHolder());
     }
 
+    @Test
     public void testSetStrategiesShouldClearAnyPreExistingStrategiesOut() {
         LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
         LocatorStrategy replacementStrategy = createMock(LocatorStrategy.class);
@@ -70,6 +76,7 @@ public class LocatorTest extends TestCase {
         verify(originalStrategy, replacementStrategy);
     }
 
+    @Test
     public void testShouldRemovePreviouslyAddedStrategy() {
         LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
 
@@ -91,6 +98,7 @@ public class LocatorTest extends TestCase {
         verify(originalStrategy);
     }
 
+    @Test
     public void testResolutionFallsThroughStrategyStackAndReturnsNullIfNotResolved() {
         List<LocatorStrategy> strategies = new ArrayList<>();
 

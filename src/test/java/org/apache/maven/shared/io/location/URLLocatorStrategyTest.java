@@ -22,21 +22,26 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
+import org.junit.jupiter.api.Test;
 
-public class URLLocatorStrategyTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class URLLocatorStrategyTest {
+
+    @Test
     public void testShouldConstructWithNoParams() {
         new URLLocatorStrategy();
     }
 
+    @Test
     public void testShouldConstructWithTempFileOptions() {
         new URLLocatorStrategy("prefix.", ".suffix", true);
     }
 
+    @Test
     public void testShouldFailToResolveWithMalformedUrl() {
         MessageHolder mh = new DefaultMessageHolder();
 
@@ -46,6 +51,7 @@ public class URLLocatorStrategyTest extends TestCase {
         assertEquals(1, mh.size());
     }
 
+    @Test
     public void testShouldResolveUrlForTempFile() throws IOException {
         File tempFile = Files.createTempFile("prefix.", ".suffix").toFile();
         tempFile.deleteOnExit();

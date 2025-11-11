@@ -22,12 +22,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import junit.framework.TestCase;
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
+import org.junit.jupiter.api.Test;
 
-public class FileLocatorStrategyTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class FileLocatorStrategyTest {
+
+    @Test
     public void testShouldResolveExistingTempFileLocation() throws IOException {
         File f = Files.createTempFile("file-locator.", ".test").toFile();
         f.deleteOnExit();
@@ -45,6 +48,7 @@ public class FileLocatorStrategyTest extends TestCase {
         assertEquals(f, location.getFile());
     }
 
+    @Test
     public void testShouldFailToResolveNonExistentFileLocation() throws IOException {
         File f = Files.createTempFile("file-locator.", ".test").toFile();
         f.delete();
