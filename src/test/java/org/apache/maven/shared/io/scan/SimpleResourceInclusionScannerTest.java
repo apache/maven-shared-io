@@ -19,7 +19,6 @@
 package org.apache.maven.shared.io.scan;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,15 +27,16 @@ import org.apache.maven.shared.io.scan.mapping.SuffixMapping;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 /**
  * @author dengliming
  */
-public class SimpleResourceInclusionScannerTest {
+class SimpleResourceInclusionScannerTest {
 
     @Test
-    public void testGetIncludedSources() throws IOException, InclusionScanException {
+    void getIncludedSources() throws Exception {
         File baseDir = new File("target");
         baseDir.deleteOnExit();
         baseDir.mkdirs();
@@ -50,10 +50,10 @@ public class SimpleResourceInclusionScannerTest {
         Set<String> targets = new HashSet<>();
         targets.add(".class");
         simpleResourceInclusionScanner.addSourceMapping(new SuffixMapping(".java", targets));
-        Set results = simpleResourceInclusionScanner.getIncludedSources(baseDir, baseDir);
-        assertTrue(results.size() > 0);
-        Object file = results.iterator().next();
-        assertTrue(file instanceof File);
-        assertEquals(f.getName(), ((File) file).getName());
+        Set<File> results = simpleResourceInclusionScanner.getIncludedSources(baseDir, baseDir);
+        assertFalse(results.isEmpty());
+        File file = results.iterator().next();
+        assertInstanceOf(File.class, file);
+        assertEquals(f.getName(), file.getName());
     }
 }

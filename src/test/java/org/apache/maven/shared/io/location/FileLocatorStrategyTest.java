@@ -19,7 +19,6 @@
 package org.apache.maven.shared.io.location;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.maven.shared.io.logging.DefaultMessageHolder;
@@ -31,10 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileLocatorStrategyTest {
+class FileLocatorStrategyTest {
 
     @Test
-    public void testShouldResolveExistingTempFileLocation() throws IOException {
+    void shouldResolveExistingTempFileLocation() throws Exception {
         File f = Files.createTempFile("file-locator.", ".test").toFile();
         f.deleteOnExit();
 
@@ -52,7 +51,7 @@ public class FileLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldFailToResolveNonExistentFileLocation() throws IOException {
+    void shouldFailToResolveNonExistentFileLocation() throws Exception {
         File f = Files.createTempFile("file-locator.", ".test").toFile();
         f.delete();
 

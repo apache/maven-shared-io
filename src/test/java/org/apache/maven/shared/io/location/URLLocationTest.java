@@ -19,7 +19,6 @@
 package org.apache.maven.shared.io.location;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 
@@ -27,13 +26,13 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class URLLocationTest {
+class URLLocationTest {
 
     @Test
-    public void testShouldConstructFromUrlAndTempFileSpecifications() throws IOException {
+    void shouldConstructFromUrlAndTempFileSpecifications() throws Exception {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();
 
@@ -43,7 +42,7 @@ public class URLLocationTest {
     }
 
     @Test
-    public void testShouldTransferFromTempFile() throws IOException {
+    void shouldTransferFromTempFile() throws Exception {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();
 
@@ -52,11 +51,11 @@ public class URLLocationTest {
         URLLocation location = new URLLocation(url, f.getAbsolutePath(), "prefix.", ".suffix", true);
 
         assertNotNull(location.getFile());
-        assertFalse(f.equals(location.getFile()));
+        assertNotEquals(f, location.getFile());
     }
 
     @Test
-    public void testShouldTransferFromTempFileThenRead() throws IOException {
+    void shouldTransferFromTempFileThenRead() throws Exception {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();
 

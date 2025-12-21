@@ -28,13 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultMessageHolderTest {
+class DefaultMessageHolderTest {
 
     // MessageHolder newMessage();
     // int size();
     // String render();
     @Test
-    public void testNewMessageIncrementsSizeWhenEmpty() {
+    void newMessageIncrementsSizeWhenEmpty() {
         MessageHolder mh = new DefaultMessageHolder();
 
         assertEquals(0, mh.size());
@@ -52,7 +52,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAppendCreatesNewMessageIfNoneCurrent() {
+    void appendCreatesNewMessageIfNoneCurrent() {
         MessageHolder mh = new DefaultMessageHolder();
 
         assertEquals(0, mh.size());
@@ -70,7 +70,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAppendErrorCreatesNewMessageIfNoneCurrent() {
+    void appendErrorCreatesNewMessageIfNoneCurrent() {
         MessageHolder mh = new DefaultMessageHolder();
 
         assertEquals(0, mh.size());
@@ -96,7 +96,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testNewMessageThenAppendOnlyIncrementsSizeByOne() {
+    void newMessageThenAppendOnlyIncrementsSizeByOne() {
         MessageHolder mh = new DefaultMessageHolder();
 
         assertEquals(0, mh.size());
@@ -120,7 +120,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testNewMessageThenAppendTwiceOnlyIncrementsSizeByOne() {
+    void newMessageThenAppendTwiceOnlyIncrementsSizeByOne() {
         MessageHolder mh = new DefaultMessageHolder();
 
         assertEquals(0, mh.size());
@@ -148,7 +148,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testNewMessageThenAppendBothMessageAndErrorOnlyIncrementsSizeByOne() {
+    void newMessageThenAppendBothMessageAndErrorOnlyIncrementsSizeByOne() {
         MessageHolder mh = new DefaultMessageHolder();
 
         assertEquals(0, mh.size());
@@ -181,7 +181,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAddMessageIncrementsSizeByOne() {
+    void addMessageIncrementsSizeByOne() {
         MessageHolder mh = new DefaultMessageHolder();
         MessageHolder check = mh.addMessage("test");
 
@@ -195,7 +195,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAddMessageTwiceIncrementsSizeByTwo() {
+    void addMessageTwiceIncrementsSizeByTwo() {
         MessageHolder mh = new DefaultMessageHolder();
         MessageHolder check = mh.addMessage("test");
 
@@ -213,7 +213,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAddMessageWithErrorIncrementsSizeByOne() {
+    void addMessageWithErrorIncrementsSizeByOne() {
         MessageHolder mh = new DefaultMessageHolder();
 
         NullPointerException npe = new NullPointerException();
@@ -237,7 +237,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAddMessageWithErrorThenWithJustMessageIncrementsSizeByTwo() {
+    void addMessageWithErrorThenWithJustMessageIncrementsSizeByTwo() {
         MessageHolder mh = new DefaultMessageHolder();
 
         NullPointerException npe = new NullPointerException();
@@ -264,7 +264,7 @@ public class DefaultMessageHolderTest {
     // int size();
     // String render();
     @Test
-    public void testAddMessageWithJustErrorIncrementsSizeByOne() {
+    void addMessageWithJustErrorIncrementsSizeByOne() {
         MessageHolder mh = new DefaultMessageHolder();
 
         NullPointerException npe = new NullPointerException();
@@ -285,21 +285,21 @@ public class DefaultMessageHolderTest {
 
     // boolean isEmpty();
     @Test
-    public void testIsEmptyAfterConstruction() {
+    void isEmptyAfterConstruction() {
         assertTrue(new DefaultMessageHolder().isEmpty());
     }
 
     // boolean isEmpty();
     @Test
-    public void testIsNotEmptyAfterConstructionAndNewMessageCall() {
+    void isNotEmptyAfterConstructionAndNewMessageCall() {
         assertFalse(new DefaultMessageHolder().newMessage().isEmpty());
     }
 
     @Test
-    public void testAppendCharSequence() {
+    void appendCharSequence() {
         MessageHolder mh = new DefaultMessageHolder();
         mh.newMessage().append(new StringBuffer("This is a test"));
 
-        assertTrue(mh.render().indexOf("This is a test") > -1);
+        assertTrue(mh.render().contains("This is a test"));
     }
 }

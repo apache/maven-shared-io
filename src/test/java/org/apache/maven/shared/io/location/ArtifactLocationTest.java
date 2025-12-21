@@ -19,7 +19,6 @@
 package org.apache.maven.shared.io.location;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
@@ -32,10 +31,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class ArtifactLocationTest {
+class ArtifactLocationTest {
 
     @Test
-    public void testShouldConstructFromTempFileSpecification() throws IOException {
+    void shouldConstructFromTempFileSpecification() throws Exception {
         File f = Files.createTempFile("artifact-location.", ".test").toFile();
         f.deleteOnExit();
 
@@ -56,7 +55,7 @@ public class ArtifactLocationTest {
     }
 
     @Test
-    public void testShouldRead() throws IOException {
+    void shouldRead() throws Exception {
         File f = Files.createTempFile("url-location.", ".test").toFile();
         f.deleteOnExit();
 

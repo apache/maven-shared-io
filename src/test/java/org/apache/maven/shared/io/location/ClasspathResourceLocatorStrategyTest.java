@@ -26,20 +26,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ClasspathResourceLocatorStrategyTest {
+class ClasspathResourceLocatorStrategyTest {
 
     @Test
-    public void testShouldConstructWithNoParams() {
+    void shouldConstructWithNoParams() {
         new ClasspathResourceLocatorStrategy();
     }
 
     @Test
-    public void testShouldConstructWithTempFileOptions() {
+    void shouldConstructWithTempFileOptions() {
         new ClasspathResourceLocatorStrategy("prefix.", ".suffix", true);
     }
 
     @Test
-    public void testShouldFailToResolveMissingClasspathResource() {
+    void shouldFailToResolveMissingClasspathResource() {
         MessageHolder mh = new DefaultMessageHolder();
         Location location = new ClasspathResourceLocatorStrategy().resolve("/some/missing/path", mh);
 
@@ -48,7 +48,7 @@ public class ClasspathResourceLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveExistingClasspathResourceWithoutPrecedingSlash() {
+    void shouldResolveExistingClasspathResourceWithoutPrecedingSlash() {
         MessageHolder mh = new DefaultMessageHolder();
         Location location = new ClasspathResourceLocatorStrategy().resolve("META-INF/maven/test.properties", mh);
 
