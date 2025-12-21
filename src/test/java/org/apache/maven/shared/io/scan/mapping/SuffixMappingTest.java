@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.maven.shared.io.scan.InclusionScanException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author jdcasey
  */
-public class SuffixMappingTest {
+class SuffixMappingTest {
     @Test
-    public void testShouldReturnSingleClassFileForSingleJavaFile() throws InclusionScanException {
+    void shouldReturnSingleClassFileForSingleJavaFile() throws Exception {
         String base = "path/to/file";
 
         File basedir = new File(".");
@@ -48,7 +47,7 @@ public class SuffixMappingTest {
     }
 
     @Test
-    public void testShouldNotReturnClassFileWhenSourceFileHasWrongSuffix() throws InclusionScanException {
+    void shouldNotReturnClassFileWhenSourceFileHasWrongSuffix() throws Exception {
         String base = "path/to/file";
 
         File basedir = new File(".");
@@ -61,7 +60,7 @@ public class SuffixMappingTest {
     }
 
     @Test
-    public void testShouldReturnOneClassFileAndOneXmlFileForSingleJavaFile() throws InclusionScanException {
+    void shouldReturnOneClassFileAndOneXmlFileForSingleJavaFile() throws Exception {
         String base = "path/to/file";
 
         File basedir = new File(".");
@@ -82,7 +81,7 @@ public class SuffixMappingTest {
     }
 
     @Test
-    public void testShouldReturnNoTargetFilesWhenSourceFileHasWrongSuffix() throws InclusionScanException {
+    void shouldReturnNoTargetFilesWhenSourceFileHasWrongSuffix() throws Exception {
         String base = "path/to/file";
 
         File basedir = new File(".");
@@ -99,7 +98,7 @@ public class SuffixMappingTest {
     }
 
     @Test
-    public void testSingleTargetMapper() throws InclusionScanException {
+    void singleTargetMapper() throws Exception {
         String base = "path/to/file";
 
         File basedir = new File("target/");

@@ -19,7 +19,6 @@
 package org.apache.maven.shared.io.location;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collections;
 
@@ -46,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ArtifactLocatorStrategyTest {
+class ArtifactLocatorStrategyTest {
 
     private ArtifactFactory factory;
 
@@ -55,14 +54,14 @@ public class ArtifactLocatorStrategyTest {
     private ArtifactRepository localRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         factory = createMock(ArtifactFactory.class);
         resolver = createMock(ArtifactResolver.class);
         localRepository = createMock(ArtifactRepository.class);
     }
 
     @Test
-    public void testShouldConstructWithoutDefaultArtifactType() {
+    void shouldConstructWithoutDefaultArtifactType() {
         replay(factory, resolver, localRepository);
 
         new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -71,7 +70,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldConstructWithDefaultArtifactType() {
+    void shouldConstructWithDefaultArtifactType() {
         replay(factory, resolver, localRepository);
 
         new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
@@ -80,7 +79,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldFailToResolveSpecWithOneToken() {
+    void shouldFailToResolveSpecWithOneToken() {
         replay(factory, resolver, localRepository);
 
         LocatorStrategy strategy =
@@ -96,7 +95,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldFailToResolveSpecWithTwoTokens() {
+    void shouldFailToResolveSpecWithTwoTokens() {
         replay(factory, resolver, localRepository);
 
         LocatorStrategy strategy =
@@ -112,7 +111,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveSpecWithThreeTokensUsingDefaultType() throws IOException {
+    void shouldResolveSpecWithThreeTokensUsingDefaultType() throws Exception {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
@@ -126,10 +125,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -151,7 +147,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveSpecWithThreeTokensUsingCustomizedDefaultType() throws IOException {
+    void shouldResolveSpecWithThreeTokensUsingCustomizedDefaultType() throws Exception {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
@@ -165,10 +161,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -190,7 +183,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveSpecWithFourTokens() throws IOException {
+    void shouldResolveSpecWithFourTokens() throws Exception {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
@@ -204,10 +197,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -229,7 +219,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveSpecWithFiveTokens() throws IOException {
+    void shouldResolveSpecWithFiveTokens() throws Exception {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
@@ -243,10 +233,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -268,7 +255,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveSpecWithFiveTokensAndEmptyTypeToken() throws IOException {
+    void shouldResolveSpecWithFiveTokensAndEmptyTypeToken() throws Exception {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
@@ -282,10 +269,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -307,7 +291,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveSpecWithMoreThanFiveTokens() throws IOException {
+    void shouldResolveSpecWithMoreThanFiveTokens() throws Exception {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
@@ -321,10 +305,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -340,7 +321,7 @@ public class ArtifactLocatorStrategyTest {
         assertNotNull(location);
         assertEquals(1, mh.size());
 
-        assertTrue(mh.render().indexOf(":six:seven") > -1);
+        assertTrue(mh.render().contains(":six:seven"));
 
         assertSame(tempFile, location.getFile());
 
@@ -348,7 +329,7 @@ public class ArtifactLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldNotResolveSpecToArtifactWithNullFile() throws IOException {
+    void shouldNotResolveSpecToArtifactWithNullFile() throws Exception {
         Artifact artifact = createMock(Artifact.class);
 
         expect(artifact.getFile()).andReturn(null);
@@ -359,10 +340,7 @@ public class ArtifactLocatorStrategyTest {
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -378,13 +356,13 @@ public class ArtifactLocatorStrategyTest {
         assertNull(location);
         assertEquals(1, mh.size());
 
-        assertTrue(mh.render().indexOf("<some-artifact-id>") > -1);
+        assertTrue(mh.render().contains("<some-artifact-id>"));
 
         verify(factory, resolver, localRepository, artifact);
     }
 
     @Test
-    public void testShouldNotResolveWhenArtifactNotFoundExceptionThrown() throws IOException {
+    void shouldNotResolveWhenArtifactNotFoundExceptionThrown() throws Exception {
         Artifact artifact = createMock(Artifact.class);
 
         expect(artifact.getId()).andReturn("<some-artifact-id>");
@@ -406,10 +384,7 @@ public class ArtifactLocatorStrategyTest {
                             "http://nowhere.com",
                             Collections.<String>emptyList(),
                             new NullPointerException()));
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -425,14 +400,14 @@ public class ArtifactLocatorStrategyTest {
         assertNull(location);
         assertEquals(1, mh.size());
 
-        assertTrue(mh.render().indexOf("<some-artifact-id>") > -1);
-        assertTrue(mh.render().indexOf("not found") > -1);
+        assertTrue(mh.render().contains("<some-artifact-id>"));
+        assertTrue(mh.render().contains("not found"));
 
         verify(factory, resolver, localRepository, artifact);
     }
 
     @Test
-    public void testShouldNotResolveWhenArtifactResolutionExceptionThrown() throws IOException {
+    void shouldNotResolveWhenArtifactResolutionExceptionThrown() throws Exception {
         Artifact artifact = createMock(Artifact.class);
 
         expect(artifact.getId()).andReturn("<some-artifact-id>");
@@ -454,10 +429,7 @@ public class ArtifactLocatorStrategyTest {
                             Collections.<String>emptyList(),
                             new NullPointerException()));
 
-        } catch (ArtifactResolutionException e) {
-            // should never happen
-            fail("This should NEVER happen. It's a mock!");
-        } catch (ArtifactNotFoundException e) {
+        } catch (ArtifactResolutionException | ArtifactNotFoundException e) {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
@@ -473,8 +445,8 @@ public class ArtifactLocatorStrategyTest {
         assertNull(location);
         assertEquals(1, mh.size());
 
-        assertTrue(mh.render().indexOf("<some-artifact-id>") > -1);
-        assertTrue(mh.render().indexOf("resolution failed") > -1);
+        assertTrue(mh.render().contains("<some-artifact-id>"));
+        assertTrue(mh.render().contains("resolution failed"));
 
         verify(factory, resolver, localRepository, artifact);
     }

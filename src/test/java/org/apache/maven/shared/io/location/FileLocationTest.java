@@ -20,9 +20,9 @@ package org.apache.maven.shared.io.location;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
@@ -31,12 +31,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class FileLocationTest {
+class FileLocationTest {
 
     @Test
-    public void testShouldConstructWithFileThenRetrieveSameFile() throws IOException {
+    void shouldConstructWithFileThenRetrieveSameFile() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -47,7 +47,7 @@ public class FileLocationTest {
     }
 
     @Test
-    public void testShouldReadFileContentsUsingByteBuffer() throws IOException {
+    void shouldReadFileContentsUsingByteBuffer() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -62,11 +62,11 @@ public class FileLocationTest {
         ByteBuffer buffer = ByteBuffer.allocate(testStr.length());
         location.read(buffer);
 
-        assertEquals(testStr, new String(buffer.array(), "US-ASCII"));
+        assertEquals(testStr, new String(buffer.array(), StandardCharsets.US_ASCII));
     }
 
     @Test
-    public void testShouldReadFileContentsUsingStream() throws IOException {
+    void shouldReadFileContentsUsingStream() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -82,12 +82,12 @@ public class FileLocationTest {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             IOUtils.copy(stream, out);
 
-            assertEquals(testStr, new String(out.toByteArray(), "US-ASCII"));
+            assertEquals(testStr, new String(out.toByteArray(), StandardCharsets.US_ASCII));
         }
     }
 
     @Test
-    public void testShouldReadFileContentsUsingByteArray() throws IOException {
+    void shouldReadFileContentsUsingByteArray() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -102,11 +102,11 @@ public class FileLocationTest {
         byte[] buffer = new byte[testStr.length()];
         location.read(buffer);
 
-        assertEquals(testStr, new String(buffer, "US-ASCII"));
+        assertEquals(testStr, new String(buffer, StandardCharsets.US_ASCII));
     }
 
     @Test
-    public void testShouldReadThenClose() throws IOException {
+    void shouldReadThenClose() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -121,13 +121,13 @@ public class FileLocationTest {
         byte[] buffer = new byte[testStr.length()];
         location.read(buffer);
 
-        assertEquals(testStr, new String(buffer, "US-ASCII"));
+        assertEquals(testStr, new String(buffer, StandardCharsets.US_ASCII));
 
         location.close();
     }
 
     @Test
-    public void testShouldOpenThenFailToSetFile() throws IOException {
+    void shouldOpenThenFailToSetFile() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -135,16 +135,11 @@ public class FileLocationTest {
 
         location.open();
 
-        try {
-            location.setFile(file);
-
-            fail("should not succeed.");
-        } catch (IllegalStateException e) {
-        }
+        assertThrows(IllegalStateException.class, () -> location.setFile(file));
     }
 
     @Test
-    public void testShouldConstructWithoutFileThenSetFileThenOpen() throws IOException {
+    void shouldConstructWithoutFileThenSetFileThenOpen() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 
@@ -155,7 +150,7 @@ public class FileLocationTest {
     }
 
     @Test
-    public void testShouldConstructWithLocationThenRetrieveEquivalentFile() throws IOException {
+    void shouldConstructWithLocationThenRetrieveEquivalentFile() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
 

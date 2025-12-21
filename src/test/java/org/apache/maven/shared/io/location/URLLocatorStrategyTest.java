@@ -19,7 +19,6 @@
 package org.apache.maven.shared.io.location;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
@@ -31,20 +30,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class URLLocatorStrategyTest {
+class URLLocatorStrategyTest {
 
     @Test
-    public void testShouldConstructWithNoParams() {
+    void shouldConstructWithNoParams() {
         new URLLocatorStrategy();
     }
 
     @Test
-    public void testShouldConstructWithTempFileOptions() {
+    void shouldConstructWithTempFileOptions() {
         new URLLocatorStrategy("prefix.", ".suffix", true);
     }
 
     @Test
-    public void testShouldFailToResolveWithMalformedUrl() {
+    void shouldFailToResolveWithMalformedUrl() {
         MessageHolder mh = new DefaultMessageHolder();
 
         Location location = new URLLocatorStrategy().resolve("://www.google.com", mh);
@@ -54,7 +53,7 @@ public class URLLocatorStrategyTest {
     }
 
     @Test
-    public void testShouldResolveUrlForTempFile() throws IOException {
+    void shouldResolveUrlForTempFile() throws Exception {
         File tempFile = Files.createTempFile("prefix.", ".suffix").toFile();
         tempFile.deleteOnExit();
 

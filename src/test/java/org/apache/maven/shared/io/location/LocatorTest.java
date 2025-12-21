@@ -35,22 +35,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LocatorTest {
+class LocatorTest {
 
     @Test
-    public void testShouldConstructWithNoParams() {
+    void shouldConstructWithNoParams() {
         new Locator();
     }
 
     @Test
-    public void testShouldConstructWithStrategyStackAndMessageHolder() {
+    void shouldConstructWithStrategyStackAndMessageHolder() {
         new Locator(Collections.<LocatorStrategy>emptyList(), new DefaultMessageHolder());
     }
 
     @Test
-    public void testShouldAllowModificationOfStrategiesAfterConstructionWithUnmodifiableStack() {
-        Locator locator = new Locator(
-                Collections.unmodifiableList(Collections.<LocatorStrategy>emptyList()), new DefaultMessageHolder());
+    void shouldAllowModificationOfStrategiesAfterConstructionWithUnmodifiableStack() {
+        Locator locator = new Locator(Collections.emptyList(), new DefaultMessageHolder());
 
         locator.addStrategy(new FileLocatorStrategy());
 
@@ -58,12 +57,12 @@ public class LocatorTest {
     }
 
     @Test
-    public void testShouldRetrieveNonNullMessageHolderWhenConstructedWithoutParams() {
+    void shouldRetrieveNonNullMessageHolderWhenConstructedWithoutParams() {
         assertNotNull(new Locator().getMessageHolder());
     }
 
     @Test
-    public void testSetStrategiesShouldClearAnyPreExistingStrategiesOut() {
+    void setStrategiesShouldClearAnyPreExistingStrategiesOut() {
         LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
         LocatorStrategy replacementStrategy = createMock(LocatorStrategy.class);
 
@@ -83,7 +82,7 @@ public class LocatorTest {
     }
 
     @Test
-    public void testShouldRemovePreviouslyAddedStrategy() {
+    void shouldRemovePreviouslyAddedStrategy() {
         LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
 
         replay(originalStrategy);
@@ -105,7 +104,7 @@ public class LocatorTest {
     }
 
     @Test
-    public void testResolutionFallsThroughStrategyStackAndReturnsNullIfNotResolved() {
+    void resolutionFallsThroughStrategyStackAndReturnsNullIfNotResolved() {
         List<LocatorStrategy> strategies = new ArrayList<>();
 
         strategies.add(new LoggingLocatorStrategy());

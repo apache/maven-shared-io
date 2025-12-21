@@ -22,20 +22,20 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DownloadFailedExceptionTest {
+class DownloadFailedExceptionTest {
 
     @Test
-    public void testShouldConstructWithUrlAndMessage() {
+    void shouldConstructWithUrlAndMessage() {
         new DownloadFailedException("http://www.google.com", "can't find.");
     }
 
     @Test
-    public void testShouldConstructWithUrlMessageAndException() {
+    void shouldConstructWithUrlMessageAndException() {
         new DownloadFailedException("http://www.google.com", "can't find.", new NullPointerException());
     }
 
     @Test
-    public void testShouldRetrieveUrlFromConstructor() {
+    void shouldRetrieveUrlFromConstructor() {
         String url = "http://www.google.com";
         assertEquals(url, new DownloadFailedException(url, "can't find.").getUrl());
     }
