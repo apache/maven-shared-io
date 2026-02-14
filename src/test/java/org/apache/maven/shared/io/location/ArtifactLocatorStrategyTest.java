@@ -33,11 +33,10 @@ import org.apache.maven.shared.io.logging.MessageHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.expectLastCall;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -55,14 +54,13 @@ class ArtifactLocatorStrategyTest {
 
     @BeforeEach
     void setUp() {
-        factory = createMock(ArtifactFactory.class);
-        resolver = createMock(ArtifactResolver.class);
-        localRepository = createMock(ArtifactRepository.class);
+        factory = mock(ArtifactFactory.class);
+        resolver = mock(ArtifactResolver.class);
+        localRepository = mock(ArtifactRepository.class);
     }
 
     @Test
     void shouldConstructWithoutDefaultArtifactType() {
-        replay(factory, resolver, localRepository);
 
         new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
 
@@ -71,7 +69,6 @@ class ArtifactLocatorStrategyTest {
 
     @Test
     void shouldConstructWithDefaultArtifactType() {
-        replay(factory, resolver, localRepository);
 
         new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
 
@@ -80,7 +77,6 @@ class ArtifactLocatorStrategyTest {
 
     @Test
     void shouldFailToResolveSpecWithOneToken() {
-        replay(factory, resolver, localRepository);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
@@ -96,7 +92,6 @@ class ArtifactLocatorStrategyTest {
 
     @Test
     void shouldFailToResolveSpecWithTwoTokens() {
-        replay(factory, resolver, localRepository);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
@@ -115,13 +110,13 @@ class ArtifactLocatorStrategyTest {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(tempFile);
-        expect(artifact.getFile()).andReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
 
-        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
-                .andReturn(artifact);
+        when(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -129,8 +124,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -151,13 +144,13 @@ class ArtifactLocatorStrategyTest {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(tempFile);
-        expect(artifact.getFile()).andReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
 
-        expect(factory.createArtifact("group", "artifact", "version", null, "zip"))
-                .andReturn(artifact);
+        when(factory.createArtifact("group", "artifact", "version", null, "zip"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -165,8 +158,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
@@ -187,13 +178,13 @@ class ArtifactLocatorStrategyTest {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(tempFile);
-        expect(artifact.getFile()).andReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
 
-        expect(factory.createArtifact("group", "artifact", "version", null, "zip"))
-                .andReturn(artifact);
+        when(factory.createArtifact("group", "artifact", "version", null, "zip"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -201,8 +192,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -223,13 +212,13 @@ class ArtifactLocatorStrategyTest {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(tempFile);
-        expect(artifact.getFile()).andReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
 
-        expect(factory.createArtifactWithClassifier("group", "artifact", "version", "zip", "classifier"))
-                .andReturn(artifact);
+        when(factory.createArtifactWithClassifier("group", "artifact", "version", "zip", "classifier"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -237,8 +226,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -259,13 +246,13 @@ class ArtifactLocatorStrategyTest {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(tempFile);
-        expect(artifact.getFile()).andReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
 
-        expect(factory.createArtifactWithClassifier("group", "artifact", "version", "jar", "classifier"))
-                .andReturn(artifact);
+        when(factory.createArtifactWithClassifier("group", "artifact", "version", "jar", "classifier"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -273,8 +260,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -295,13 +280,13 @@ class ArtifactLocatorStrategyTest {
         File tempFile = Files.createTempFile("artifact-location.", ".temp").toFile();
         tempFile.deleteOnExit();
 
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(tempFile);
-        expect(artifact.getFile()).andReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
+        when(artifact.getFile()).thenReturn(tempFile);
 
-        expect(factory.createArtifactWithClassifier("group", "artifact", "version", "zip", "classifier"))
-                .andReturn(artifact);
+        when(factory.createArtifactWithClassifier("group", "artifact", "version", "zip", "classifier"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -309,8 +294,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -330,13 +313,13 @@ class ArtifactLocatorStrategyTest {
 
     @Test
     void shouldNotResolveSpecToArtifactWithNullFile() throws Exception {
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getFile()).andReturn(null);
-        expect(artifact.getId()).andReturn("<some-artifact-id>");
+        when(artifact.getFile()).thenReturn(null);
+        when(artifact.getId()).thenReturn("<some-artifact-id>");
 
-        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
-                .andReturn(artifact);
+        when(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
@@ -344,8 +327,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -363,17 +344,17 @@ class ArtifactLocatorStrategyTest {
 
     @Test
     void shouldNotResolveWhenArtifactNotFoundExceptionThrown() throws Exception {
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getId()).andReturn("<some-artifact-id>");
+        when(artifact.getId()).thenReturn("<some-artifact-id>");
 
-        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
-                .andReturn(artifact);
+        when(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
             expectLastCall()
-                    .andThrow(new ArtifactNotFoundException(
+                    .thenThrow(new ArtifactNotFoundException(
                             "not found",
                             "group",
                             "artifact",
@@ -388,8 +369,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);
@@ -408,17 +387,17 @@ class ArtifactLocatorStrategyTest {
 
     @Test
     void shouldNotResolveWhenArtifactResolutionExceptionThrown() throws Exception {
-        Artifact artifact = createMock(Artifact.class);
+        Artifact artifact = mock(Artifact.class);
 
-        expect(artifact.getId()).andReturn("<some-artifact-id>");
+        when(artifact.getId()).thenReturn("<some-artifact-id>");
 
-        expect(factory.createArtifact("group", "artifact", "version", null, "jar"))
-                .andReturn(artifact);
+        when(factory.createArtifact("group", "artifact", "version", null, "jar"))
+                .thenReturn(artifact);
 
         try {
             resolver.resolve(artifact, Collections.<ArtifactRepository>emptyList(), localRepository);
             expectLastCall()
-                    .andThrow(new ArtifactResolutionException(
+                    .thenThrow(new ArtifactResolutionException(
                             "resolution failed",
                             "group",
                             "artifact",
@@ -433,8 +412,6 @@ class ArtifactLocatorStrategyTest {
             // should never happen
             fail("This should NEVER happen. It's a mock!");
         }
-
-        replay(factory, resolver, localRepository, artifact);
 
         LocatorStrategy strategy =
                 new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST);

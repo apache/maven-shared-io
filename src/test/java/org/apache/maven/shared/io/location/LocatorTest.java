@@ -26,9 +26,8 @@ import org.apache.maven.shared.io.logging.DefaultMessageHolder;
 import org.apache.maven.shared.io.logging.MessageHolder;
 import org.junit.jupiter.api.Test;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -63,10 +62,8 @@ class LocatorTest {
 
     @Test
     void setStrategiesShouldClearAnyPreExistingStrategiesOut() {
-        LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
-        LocatorStrategy replacementStrategy = createMock(LocatorStrategy.class);
-
-        replay(originalStrategy, replacementStrategy);
+        LocatorStrategy originalStrategy = mock(LocatorStrategy.class);
+        LocatorStrategy replacementStrategy = mock(LocatorStrategy.class);
 
         Locator locator = new Locator();
         locator.addStrategy(originalStrategy);
@@ -83,9 +80,7 @@ class LocatorTest {
 
     @Test
     void shouldRemovePreviouslyAddedStrategy() {
-        LocatorStrategy originalStrategy = createMock(LocatorStrategy.class);
-
-        replay(originalStrategy);
+        LocatorStrategy originalStrategy = mock(LocatorStrategy.class);
 
         Locator locator = new Locator();
         locator.addStrategy(originalStrategy);

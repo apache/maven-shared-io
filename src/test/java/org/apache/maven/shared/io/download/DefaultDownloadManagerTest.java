@@ -40,13 +40,12 @@ import org.apache.maven.wagon.repository.Repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.anyString;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.expectLastCall;
+import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -61,8 +60,8 @@ class DefaultDownloadManagerTest {
 
     @BeforeEach
     void setUp() {
-        wagonManager = createMock(WagonManager.class);
-        wagon = createMock(Wagon.class);
+        wagonManager = mock(WagonManager.class);
+        wagon = mock(Wagon.class);
     }
 
     @Test
@@ -72,7 +71,6 @@ class DefaultDownloadManagerTest {
 
     @Test
     void shouldConstructWithWagonManager() {
-        replay(wagonManager);
 
         new DefaultDownloadManager(wagonManager);
 
@@ -81,7 +79,6 @@ class DefaultDownloadManagerTest {
 
     @Test
     void shouldFailToDownloadMalformedURL() {
-        replay(wagonManager);
 
         DownloadManager mgr = new DefaultDownloadManager(wagonManager);
 
@@ -103,8 +100,6 @@ class DefaultDownloadManagerTest {
 
         setupDefaultMockConfiguration();
 
-        replay(wagon, wagonManager);
-
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
         downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
@@ -118,8 +113,6 @@ class DefaultDownloadManagerTest {
         tempFile.deleteOnExit();
 
         setupDefaultMockConfiguration();
-
-        replay(wagon, wagonManager);
 
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
@@ -143,13 +136,11 @@ class DefaultDownloadManagerTest {
 
         setupDefaultMockConfiguration();
 
-        TransferListener transferListener = createMock(TransferListener.class);
+        TransferListener transferListener = mock(TransferListener.class);
 
         wagon.addTransferListener(transferListener);
 
         wagon.removeTransferListener(transferListener);
-
-        replay(wagon, wagonManager, transferListener);
 
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
@@ -167,8 +158,6 @@ class DefaultDownloadManagerTest {
         tempFile.deleteOnExit();
 
         setupMocksWithWagonManagerGetException(new UnsupportedProtocolException("not supported"));
-
-        replay(wagon, wagonManager);
 
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
@@ -190,8 +179,6 @@ class DefaultDownloadManagerTest {
 
         setupMocksWithWagonConnectionException(new ConnectionException("connect error"));
 
-        replay(wagon, wagonManager);
-
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
         try {
@@ -211,8 +198,6 @@ class DefaultDownloadManagerTest {
         tempFile.deleteOnExit();
 
         setupMocksWithWagonConnectionException(new AuthenticationException("bad credentials"));
-
-        replay(wagon, wagonManager);
 
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
@@ -234,8 +219,6 @@ class DefaultDownloadManagerTest {
 
         setupMocksWithWagonGetException(new TransferFailedException("bad transfer"));
 
-        replay(wagon, wagonManager);
-
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
         try {
@@ -255,8 +238,6 @@ class DefaultDownloadManagerTest {
         tempFile.deleteOnExit();
 
         setupMocksWithWagonGetException(new ResourceDoesNotExistException("bad resource"));
-
-        replay(wagon, wagonManager);
 
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
@@ -278,8 +259,6 @@ class DefaultDownloadManagerTest {
 
         setupMocksWithWagonGetException(new AuthorizationException("bad transfer"));
 
-        replay(wagon, wagonManager);
-
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
         try {
@@ -300,8 +279,6 @@ class DefaultDownloadManagerTest {
 
         setupMocksWithWagonDisconnectException(new ConnectionException("not connected"));
 
-        replay(wagon, wagonManager);
-
         DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
 
         MessageHolder mh = new DefaultMessageHolder();
@@ -316,22 +293,22 @@ class DefaultDownloadManagerTest {
     private void setupDefaultMockConfiguration() {
         assertDoesNotThrow(
                 () -> {
-                    expect(wagonManager.getWagon("file")).andReturn(wagon);
+                    when(wagonManager.getWagon("file")).thenReturn(wagon);
                 },
                 "This shouldn't happen!!");
 
-        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        when(wagonManager.getAuthenticationInfo(anyString())).thenReturn(null);
 
-        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        when(wagonManager.getProxy(anyString())).thenReturn(null);
 
         try {
-            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+            wagon.connect(any(Repository.class), any(AuthenticationInfo.class), any(ProxyInfo.class));
         } catch (ConnectionException | AuthenticationException e) {
             fail("This shouldn't happen!!");
         }
 
         try {
-            wagon.get(anyString(), anyObject(File.class));
+            wagon.get(anyString(), any(File.class));
         } catch (TransferFailedException | AuthorizationException | ResourceDoesNotExistException e) {
             fail("This shouldn't happen!!");
         }
@@ -342,7 +319,7 @@ class DefaultDownloadManagerTest {
     private void setupMocksWithWagonManagerGetException(Throwable error) {
         assertDoesNotThrow(
                 () -> {
-                    expect(wagonManager.getWagon("file")).andThrow(error);
+                    when(wagonManager.getWagon("file")).thenThrow(error);
                 },
                 "This shouldn't happen!!");
     }
@@ -350,17 +327,17 @@ class DefaultDownloadManagerTest {
     private void setupMocksWithWagonConnectionException(Throwable error) {
         assertDoesNotThrow(
                 () -> {
-                    expect(wagonManager.getWagon("file")).andReturn(wagon);
+                    when(wagonManager.getWagon("file")).thenReturn(wagon);
                 },
                 "This shouldn't happen!!");
 
-        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        when(wagonManager.getAuthenticationInfo(anyString())).thenReturn(null);
 
-        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        when(wagonManager.getProxy(anyString())).thenReturn(null);
 
         try {
-            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
-            expectLastCall().andThrow(error);
+            wagon.connect(any(Repository.class), any(AuthenticationInfo.class), any(ProxyInfo.class));
+            expectLastCall().thenThrow(error);
         } catch (ConnectionException | AuthenticationException e) {
             fail("This shouldn't happen!!");
         }
@@ -369,23 +346,23 @@ class DefaultDownloadManagerTest {
     private void setupMocksWithWagonGetException(Throwable error) {
         assertDoesNotThrow(
                 () -> {
-                    expect(wagonManager.getWagon("file")).andReturn(wagon);
+                    when(wagonManager.getWagon("file")).thenReturn(wagon);
                 },
                 "This shouldn't happen!!");
 
-        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        when(wagonManager.getAuthenticationInfo(anyString())).thenReturn(null);
 
-        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        when(wagonManager.getProxy(anyString())).thenReturn(null);
 
         try {
-            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+            wagon.connect(any(Repository.class), any(AuthenticationInfo.class), any(ProxyInfo.class));
         } catch (ConnectionException | AuthenticationException e) {
             fail("This shouldn't happen!!");
         }
 
         try {
-            wagon.get(anyString(), anyObject(File.class));
-            expectLastCall().andThrow(error);
+            wagon.get(anyString(), any(File.class));
+            expectLastCall().thenThrow(error);
         } catch (TransferFailedException | AuthorizationException | ResourceDoesNotExistException e) {
             fail("This shouldn't happen!!");
         }
@@ -396,22 +373,22 @@ class DefaultDownloadManagerTest {
     private void setupMocksWithWagonDisconnectException(Throwable error) {
         assertDoesNotThrow(
                 () -> {
-                    expect(wagonManager.getWagon("file")).andReturn(wagon);
+                    when(wagonManager.getWagon("file")).thenReturn(wagon);
                 },
                 "This shouldn't happen!!");
 
-        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        when(wagonManager.getAuthenticationInfo(anyString())).thenReturn(null);
 
-        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        when(wagonManager.getProxy(anyString())).thenReturn(null);
 
         try {
-            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+            wagon.connect(any(Repository.class), any(AuthenticationInfo.class), any(ProxyInfo.class));
         } catch (ConnectionException | AuthenticationException e) {
             fail("This shouldn't happen!!");
         }
 
         try {
-            wagon.get(anyString(), anyObject(File.class));
+            wagon.get(anyString(), any(File.class));
         } catch (TransferFailedException | AuthorizationException | ResourceDoesNotExistException e) {
             fail("This shouldn't happen!!");
         }
@@ -419,7 +396,7 @@ class DefaultDownloadManagerTest {
         assertDoesNotThrow(
                 () -> {
                     wagon.disconnect();
-                    expectLastCall().andThrow(error);
+                    expectLastCall().thenThrow(error);
                 },
                 "This shouldn't happen!!");
     }
