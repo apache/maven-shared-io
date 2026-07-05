@@ -24,10 +24,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.shared.io.logging.MessageHolder;
@@ -54,7 +54,7 @@ public class DefaultDownloadManager implements DownloadManager {
 
     private WagonManager wagonManager;
 
-    private Map<String, File> cache = new HashMap<>();
+    private Map<String, File> cache = new ConcurrentHashMap<>();
 
     /**
      * Create an instance of the {@code DefaultDownloadManager}.
