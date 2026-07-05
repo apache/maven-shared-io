@@ -55,7 +55,7 @@ public class ClasspathResourceLocatorStrategy implements LocatorStrategy {
     public Location resolve(String locationSpecification, MessageHolder messageHolder) {
         ClassLoader cloader = Thread.currentThread().getContextClassLoader();
 
-        URL resource = cloader.getResource(locationSpecification);
+        URL resource = cloader != null ? cloader.getResource(locationSpecification) : null;
 
         Location location = null;
 
