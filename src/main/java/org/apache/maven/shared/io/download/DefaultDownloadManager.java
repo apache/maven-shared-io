@@ -91,6 +91,10 @@ public class DefaultDownloadManager implements DownloadManager {
             throw new DownloadFailedException(url, "Download failed due to invalid URL.", e);
         }
 
+        if (wagonManager == null) {
+            throw new DownloadFailedException(url, "WagonManager not set in DefaultDownloadManager.");
+        }
+
         Wagon wagon = null;
 
         // Retrieve the correct Wagon instance used to download the remote archive
@@ -98,6 +102,10 @@ public class DefaultDownloadManager implements DownloadManager {
             wagon = wagonManager.getWagon(sourceUrl.getProtocol());
         } catch (UnsupportedProtocolException e) {
             throw new DownloadFailedException(url, "Download failed", e);
+        }
+
+        if (wagon == null) {
+            throw new DownloadFailedException(url, "No wagon available for protocol: " + sourceUrl.getProtocol());
         }
 
         messageHolder.addMessage("Using wagon: " + wagon + " to download: " + url);
