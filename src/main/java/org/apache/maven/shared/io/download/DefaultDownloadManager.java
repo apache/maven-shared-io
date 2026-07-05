@@ -58,7 +58,12 @@ public class DefaultDownloadManager implements DownloadManager {
 
     /**
      * Create an instance of the {@code DefaultDownloadManager}.
+     *
+     * @deprecated The no-arg constructor creates a DefaultDownloadManager that is completely non-functional and
+     *             cannot download anything without a {@link WagonManager}. Use
+     *             {@link #DefaultDownloadManager(WagonManager)} instead.
      */
+    @Deprecated
     public DefaultDownloadManager() {}
 
     /**
