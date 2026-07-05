@@ -20,6 +20,11 @@ package org.apache.maven.shared.io.logging;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.junit.jupiter.api.Test;
 
@@ -301,5 +306,22 @@ class DefaultMessageHolderTest {
         mh.newMessage().append(new StringBuffer("This is a test"));
 
         assertTrue(mh.render().contains("This is a test"));
+    }
+
+    @Test
+    void shouldAddMessagesConcurrently() throws Exception {
+        DefaultMessageHolder mh = new DefaultMessageHolder();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<Future<?>> futures = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            futures.add(executor.submit(() -> {
+                mh.addMessage("concurrent message");
+            }));
+        }
+        for (Future<?> future : futures) {
+            future.get();
+        }
+        assertEquals(10, mh.size());
+        executor.shutdown();
     }
 }
