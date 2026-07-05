@@ -30,6 +30,10 @@ import org.apache.commons.io.FileUtils;
  */
 public class URLLocation extends FileLocation {
 
+    private static final String DEFAULT_TEMP_FILE_PREFIX = "url";
+
+    private static final String DEFAULT_TEMP_FILE_SUFFIX = ".tmp";
+
     private final URL url;
 
     private final String tempFilePrefix;
@@ -50,8 +54,8 @@ public class URLLocation extends FileLocation {
         super(specification);
 
         this.url = url;
-        this.tempFilePrefix = tempFilePrefix;
-        this.tempFileSuffix = tempFileSuffix;
+        this.tempFilePrefix = tempFilePrefix == null ? DEFAULT_TEMP_FILE_PREFIX : tempFilePrefix;
+        this.tempFileSuffix = tempFileSuffix == null ? DEFAULT_TEMP_FILE_SUFFIX : tempFileSuffix;
         this.tempFileDeleteOnExit = tempFileDeleteOnExit;
     }
 
