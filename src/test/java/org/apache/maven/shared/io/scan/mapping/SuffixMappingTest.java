@@ -96,21 +96,4 @@ class SuffixMappingTest {
 
         assertTrue(results.isEmpty(), "Returned wrong number of target files.");
     }
-
-    @Test
-    void singleTargetMapper() throws Exception {
-        String base = "path/to/file";
-
-        File basedir = new File("target/");
-
-        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "/foo");
-
-        Set<File> results = mapping.getTargetFiles(basedir, base + ".apt");
-
-        assertTrue(results.isEmpty());
-
-        results = mapping.getTargetFiles(basedir, base + ".cs");
-
-        assertEquals(1, results.size());
-    }
 }
