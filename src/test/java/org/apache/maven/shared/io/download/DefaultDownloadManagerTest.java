@@ -20,7 +20,12 @@ package org.apache.maven.shared.io.download;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.maven.artifact.manager.WagonManager;
@@ -310,6 +315,45 @@ class DefaultDownloadManagerTest {
 
         assertTrue(mh.render().contains("ConnectionException"));
 
+        verify(wagon, wagonManager);
+    }
+
+    @Test
+    void shouldDownloadConcurrentlyAndCacheResults() throws Exception {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
+        tempFile.deleteOnExit();
+
+        expect(wagonManager.getWagon("file")).andReturn(wagon).anyTimes();
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null).anyTimes();
+        expect(wagonManager.getProxy(anyString())).andReturn(null).anyTimes();
+        wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        expectLastCall().anyTimes();
+        wagon.get(anyString(), anyObject(File.class));
+        expectLastCall().anyTimes();
+        wagon.disconnect();
+        expectLastCall().anyTimes();
+
+        replay(wagon, wagonManager);
+
+        DefaultDownloadManager mgr = new DefaultDownloadManager(wagonManager);
+
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<Future<?>> futures = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            futures.add(executor.submit(() -> {
+                try {
+                    mgr.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
+                } catch (DownloadFailedException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
+        }
+
+        for (Future<?> future : futures) {
+            future.get();
+        }
+
+        executor.shutdown();
         verify(wagon, wagonManager);
     }
 
