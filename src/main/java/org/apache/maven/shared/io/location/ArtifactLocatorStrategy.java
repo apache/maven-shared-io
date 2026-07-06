@@ -140,6 +140,8 @@ public class ArtifactLocatorStrategy implements LocatorStrategy {
                 for (int i = 5; i < parts.length; i++) {
                     messageHolder.append(":" + parts[i]);
                 }
+
+                messageHolder.append("\'");
             }
 
             Artifact artifact;
