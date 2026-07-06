@@ -45,11 +45,15 @@ import org.apache.maven.wagon.repository.Repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.easymock.Capture;
+
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -316,6 +320,52 @@ class DefaultDownloadManagerTest {
         assertTrue(mh.render().contains("ConnectionException"));
 
         verify(wagon, wagonManager);
+    }
+
+    @Test
+    void shouldUseCorrectBaseUrlWhenUrlHasQueryString() throws Exception {
+        String urlWithQuery = "http://example.com/path/file.jar?token=abc";
+
+        Capture<Repository> repoCapture = newCapture();
+
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(anyString(), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        downloadManager.download(urlWithQuery, new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        assertEquals("http://example.com", repoCapture.getValue().getUrl());
+    }
+
+    @Test
+    void shouldUseCorrectBaseUrlWhenUrlHasFragment() throws Exception {
+        String urlWithFragment = "http://example.com/path/file.jar#section";
+
+        Capture<Repository> repoCapture = newCapture();
+
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(anyString(), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        downloadManager.download(urlWithFragment, new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        assertEquals("http://example.com", repoCapture.getValue().getUrl());
     }
 
     @Test

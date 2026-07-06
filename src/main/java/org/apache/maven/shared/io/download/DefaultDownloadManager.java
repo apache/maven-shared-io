@@ -115,8 +115,13 @@ public class DefaultDownloadManager implements DownloadManager {
         messageHolder.addMessage("Download target is: " + downloaded.getAbsolutePath());
 
         // split the download URL into base URL and remote path for connecting, then retrieving.
+        // Build baseUrl from URL components to avoid corruption by query strings or fragments.
         String remotePath = sourceUrl.getPath();
-        String baseUrl = url.substring(0, url.length() - remotePath.length());
+        int port = sourceUrl.getPort();
+        String baseUrl = sourceUrl.getProtocol() + "://"
+                + (sourceUrl.getUserInfo() != null ? sourceUrl.getUserInfo() + "@" : "")
+                + sourceUrl.getHost()
+                + (port != -1 ? ":" + port : "");
 
         for (Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); ) {
             wagon.addTransferListener(it.next());
