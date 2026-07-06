@@ -98,6 +98,28 @@ class SuffixMappingTest {
     }
 
     @Test
+    void shouldReturnNoTargetFilesWhenSourceSuffixIsNull() throws Exception {
+        File basedir = new File(".");
+
+        SuffixMapping mapping = new SuffixMapping(null, ".class");
+
+        Set<File> results = mapping.getTargetFiles(basedir, "path/to/file.java");
+
+        assertTrue(results.isEmpty(), "Returned wrong number of target files.");
+    }
+
+    @Test
+    void shouldReturnNoTargetFilesWhenSourceIsNull() throws Exception {
+        File basedir = new File(".");
+
+        SuffixMapping mapping = new SuffixMapping(".java", ".class");
+
+        Set<File> results = mapping.getTargetFiles(basedir, null);
+
+        assertTrue(results.isEmpty(), "Returned wrong number of target files.");
+    }
+
+    @Test
     void singleTargetMapper() throws Exception {
         String base = "path/to/file";
 
