@@ -48,17 +48,18 @@ class ClasspathResourceLocatorStrategyTest {
     }
 
     @Test
-    void shouldFailToResolveWhenContextClassLoaderIsNull() {
+    void shouldResolveWithSystemClassLoaderWhenContextClassLoaderIsNull() {
         Thread thread = Thread.currentThread();
         ClassLoader contextClassLoader = thread.getContextClassLoader();
-        MessageHolder mh = new DefaultMessageHolder();
+        MessageHolder messageHolder = new DefaultMessageHolder();
 
         try {
             thread.setContextClassLoader(null);
-            Location location = new ClasspathResourceLocatorStrategy().resolve("META-INF/maven/test.properties", mh);
+            Location location =
+                    new ClasspathResourceLocatorStrategy().resolve("META-INF/maven/test.properties", messageHolder);
 
-            assertNull(location);
-            assertEquals(1, mh.size());
+            assertNotNull(location);
+            assertEquals(0, messageHolder.size());
         } finally {
             thread.setContextClassLoader(contextClassLoader);
         }
