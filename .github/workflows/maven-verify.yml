@@ -24,7 +24,7 @@ on:
 jobs:
   build:
     name: Verify
-    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v4
+    uses: apache/maven-gh-actions-shared/.github/workflows/maven-verify.yml@v5
     with:
       maven4-enabled: true
       maven4-version: '4.0.0-rc-2' # only needed if you want to override default
