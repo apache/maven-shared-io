@@ -50,8 +50,8 @@ public class URLLocation extends FileLocation {
         super(specification);
 
         this.url = url;
-        this.tempFilePrefix = tempFilePrefix;
-        this.tempFileSuffix = tempFileSuffix;
+        this.tempFilePrefix = (tempFilePrefix != null) ? tempFilePrefix : "url";
+        this.tempFileSuffix = (tempFileSuffix != null) ? tempFileSuffix : ".tmp";
         this.tempFileDeleteOnExit = tempFileDeleteOnExit;
     }
 
