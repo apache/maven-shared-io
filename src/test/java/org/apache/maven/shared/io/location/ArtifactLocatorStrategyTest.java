@@ -42,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -76,6 +77,33 @@ class ArtifactLocatorStrategyTest {
         new ArtifactLocatorStrategy(factory, resolver, localRepository, Collections.EMPTY_LIST, "zip");
 
         verify(factory, resolver, localRepository);
+    }
+
+    @Test
+    void shouldRejectNullFactory() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new ArtifactLocatorStrategy(null, resolver, localRepository, Collections.EMPTY_LIST));
+
+        assertEquals("factory", exception.getMessage());
+    }
+
+    @Test
+    void shouldRejectNullResolver() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new ArtifactLocatorStrategy(factory, null, localRepository, Collections.EMPTY_LIST));
+
+        assertEquals("resolver", exception.getMessage());
+    }
+
+    @Test
+    void shouldRejectNullLocalRepository() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> new ArtifactLocatorStrategy(factory, resolver, null, Collections.EMPTY_LIST));
+
+        assertEquals("localRepository", exception.getMessage());
     }
 
     @Test
