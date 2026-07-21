@@ -21,8 +21,11 @@ package org.apache.maven.shared.io.download;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -47,13 +50,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import org.easymock.Capture;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -355,6 +362,82 @@ class DefaultDownloadManagerTest {
 
         executor.shutdown();
         verify(wagon, wagonManager);
+    }
+
+    @Test
+    void shouldDeleteTempFileOnConnectionFailure() throws Exception {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
+        tempFile.deleteOnExit();
+
+        setupMocksWithWagonConnectionException(new ConnectionException("connect error"));
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        Set<String> filesBefore = listDownloadTempFiles(tempDir);
+
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
+            fail("should have failed to connect wagon.");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).contains("ConnectionException"));
+        }
+
+        Set<String> filesAfter = listDownloadTempFiles(tempDir);
+        filesAfter.removeAll(filesBefore);
+        assertTrue(filesAfter.isEmpty(), "Temp file must be deleted immediately when connection fails, not leaked");
+
+        verify(wagon, wagonManager);
+    }
+
+    @Test
+    void shouldDeleteTempFileOnTransferFailure() throws Exception {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
+        tempFile.deleteOnExit();
+
+        expect(wagonManager.getWagon("file")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        try {
+            wagon.connect(anyObject(Repository.class), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        } catch (ConnectionException | AuthenticationException e) {
+            fail("This shouldn't happen!!");
+        }
+
+        Capture<File> capturedTempFile = newCapture();
+        try {
+            wagon.get(anyString(), capture(capturedTempFile));
+            expectLastCall().andThrow(new TransferFailedException("bad transfer"));
+        } catch (TransferFailedException | AuthorizationException | ResourceDoesNotExistException e) {
+            fail("This shouldn't happen!!");
+        }
+
+        assertDoesNotThrow(() -> wagon.disconnect(), "This shouldn't happen!!");
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+
+        try {
+            downloadManager.download(tempFile.toURI().toASCIIString(), new DefaultMessageHolder());
+            fail("should have thrown DownloadFailedException");
+        } catch (DownloadFailedException e) {
+            assertTrue(ExceptionUtils.getStackTrace(e).contains("TransferFailedException"));
+        }
+
+        assertTrue(capturedTempFile.hasCaptured(), "wagon.get() should have been called");
+        assertFalse(
+                capturedTempFile.getValue().exists(),
+                "Temp file must be deleted immediately when transfer fails, not leaked");
+
+        verify(wagon, wagonManager);
+    }
+
+    private Set<String> listDownloadTempFiles(File tempDir) {
+        String[] files = tempDir.list((dir, name) -> name.startsWith("download-") && name.endsWith(".tmp"));
+        return files == null ? new HashSet<>() : new HashSet<>(Arrays.asList(files));
     }
 
     private void setupDefaultMockConfiguration() {

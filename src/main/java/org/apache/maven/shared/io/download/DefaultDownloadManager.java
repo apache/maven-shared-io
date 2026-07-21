@@ -59,13 +59,30 @@ public class DefaultDownloadManager implements DownloadManager {
     /**
      * Create an instance of the {@code DefaultDownloadManager}.
      */
-    public DefaultDownloadManager() {}
+    public DefaultDownloadManager() {
+        registerShutdownHook();
+    }
 
     /**
      * @param wagonManager {@link org.apache.maven.repository.legacy.WagonManager}
      */
     public DefaultDownloadManager(WagonManager wagonManager) {
         this.wagonManager = wagonManager;
+        registerShutdownHook();
+    }
+
+    /**
+     * Registers a single JVM shutdown hook per manager instance that deletes all
+     * cached temporary download files at JVM exit. This avoids the memory leak
+     * caused by {@code File.deleteOnExit()}, which accumulates entries in the
+     * JVM-wide {@code DeleteOnExitHook} static set on every download invocation.
+     */
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (File file : cache.values()) {
+                file.delete();
+            }
+        }));
     }
 
     /** {@inheritDoc} */
@@ -105,9 +122,6 @@ public class DefaultDownloadManager implements DownloadManager {
         try {
             // create the landing file in /tmp for the downloaded source archive
             downloaded = Files.createTempFile("download-", null).toFile();
-
-            // delete when the JVM exits, to avoid polluting the temp dir...
-            downloaded.deleteOnExit();
         } catch (IOException e) {
             throw new DownloadFailedException(url, "Failed to create temporary file target for download.", e);
         }
@@ -128,26 +142,28 @@ public class DefaultDownloadManager implements DownloadManager {
 
         messageHolder.addMessage("Connecting to: " + repo.getHost() + "(baseUrl: " + repo.getUrl() + ")");
 
+        boolean success = false;
+        boolean connected = false;
         try {
             wagon.connect(
                     repo,
                     wagonManager.getAuthenticationInfo(repo.getId()),
                     wagonManager.getProxy(sourceUrl.getProtocol()));
-        } catch (ConnectionException e) {
-            throw new DownloadFailedException(url, "Download failed", e);
-        } catch (AuthenticationException e) {
-            throw new DownloadFailedException(url, "Download failed", e);
-        }
+            connected = true;
 
-        messageHolder.addMessage("Getting: " + remotePath);
+            messageHolder.addMessage("Getting: " + remotePath);
 
-        try {
             wagon.get(remotePath, downloaded);
 
             // cache this for later download requests to the same instance...
             cache.put(url, downloaded);
 
+            success = true;
             return downloaded;
+        } catch (ConnectionException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
+        } catch (AuthenticationException e) {
+            throw new DownloadFailedException(url, "Download failed", e);
         } catch (TransferFailedException e) {
             throw new DownloadFailedException(url, "Download failed", e);
         } catch (ResourceDoesNotExistException e) {
@@ -155,8 +171,15 @@ public class DefaultDownloadManager implements DownloadManager {
         } catch (AuthorizationException e) {
             throw new DownloadFailedException(url, "Download failed", e);
         } finally {
-            // ensure the Wagon instance is closed out properly.
-            if (wagon != null) {
+            // On failure, delete the temp file immediately to avoid leaving orphaned files.
+            // Successfully downloaded files are cleaned up by the shutdown hook registered
+            // in registerShutdownHook().
+            if (!success && downloaded != null) {
+                downloaded.delete();
+            }
+
+            // ensure the Wagon instance is closed out properly (only if connect succeeded)
+            if (wagon != null && connected) {
                 try {
                     messageHolder.addMessage("Disconnecting.");
 
