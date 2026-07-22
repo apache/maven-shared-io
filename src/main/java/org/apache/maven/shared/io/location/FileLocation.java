@@ -68,6 +68,9 @@ public class FileLocation implements Location {
                 // swallow it.
             }
         }
+
+        channel = null;
+        stream = null;
     }
 
     /** {@inheritDoc} */

@@ -127,6 +127,31 @@ class FileLocationTest {
     }
 
     @Test
+    void shouldReopenAfterClose() throws Exception {
+        File file = Files.createTempFile("test.", ".file-location").toFile();
+        file.deleteOnExit();
+
+        String testStr = "This is a test";
+
+        FileUtils.writeStringToFile(file, testStr, "US-ASCII");
+
+        FileLocation location = new FileLocation(file, file.getAbsolutePath());
+
+        location.open();
+        byte[] buffer = new byte[testStr.length()];
+        location.read(buffer);
+        assertEquals(testStr, new String(buffer, StandardCharsets.US_ASCII));
+        location.close();
+
+        // read again after close should re-open
+        location.open();
+        buffer = new byte[testStr.length()];
+        location.read(buffer);
+        assertEquals(testStr, new String(buffer, StandardCharsets.US_ASCII));
+        location.close();
+    }
+
+    @Test
     void shouldOpenThenFailToSetFile() throws Exception {
         File file = Files.createTempFile("test.", ".file-location").toFile();
         file.deleteOnExit();
