@@ -58,7 +58,12 @@ public class DefaultDownloadManager implements DownloadManager {
 
     /**
      * Create an instance of the {@code DefaultDownloadManager}.
+     *
+     * @deprecated The no-arg constructor creates a DefaultDownloadManager that is completely non-functional and
+     *             cannot download anything without a {@link WagonManager}. Use
+     *             {@link #DefaultDownloadManager(WagonManager)} instead.
      */
+    @Deprecated
     public DefaultDownloadManager() {}
 
     /**
@@ -91,6 +96,10 @@ public class DefaultDownloadManager implements DownloadManager {
             throw new DownloadFailedException(url, "Download failed due to invalid URL.", e);
         }
 
+        if (wagonManager == null) {
+            throw new DownloadFailedException(url, "WagonManager not set in DefaultDownloadManager.");
+        }
+
         Wagon wagon = null;
 
         // Retrieve the correct Wagon instance used to download the remote archive
@@ -98,6 +107,10 @@ public class DefaultDownloadManager implements DownloadManager {
             wagon = wagonManager.getWagon(sourceUrl.getProtocol());
         } catch (UnsupportedProtocolException e) {
             throw new DownloadFailedException(url, "Download failed", e);
+        }
+
+        if (wagon == null) {
+            throw new DownloadFailedException(url, "No wagon available for protocol: " + sourceUrl.getProtocol());
         }
 
         messageHolder.addMessage("Using wagon: " + wagon + " to download: " + url);

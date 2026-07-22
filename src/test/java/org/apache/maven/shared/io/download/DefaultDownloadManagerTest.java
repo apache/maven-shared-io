@@ -76,6 +76,38 @@ class DefaultDownloadManagerTest {
     }
 
     @Test
+    void shouldFailToDownloadWhenWagonManagerIsNull() {
+        DefaultDownloadManager downloadManager = new DefaultDownloadManager();
+        try {
+            downloadManager.download("http://example.com/file.txt", new DefaultMessageHolder());
+            fail("Should have thrown DownloadFailedException.");
+        } catch (DownloadFailedException e) {
+            assertTrue(e.getMessage().contains("WagonManager not set"));
+        }
+    }
+
+    @Test
+    void shouldFailToDownloadWhenGetWagonReturnsNull() throws Exception {
+        expect(wagonManager.getWagon("file")).andReturn(null);
+        replay(wagonManager);
+
+        DefaultDownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        try {
+            downloadManager.download(
+                    Files.createTempFile("download-source", "test")
+                            .toFile()
+                            .toURI()
+                            .toASCIIString(),
+                    new DefaultMessageHolder());
+            fail("Should have thrown DownloadFailedException.");
+        } catch (DownloadFailedException e) {
+            assertTrue(e.getMessage().contains("No wagon available"));
+        }
+
+        verify(wagonManager);
+    }
+
+    @Test
     void shouldConstructWithWagonManager() {
         replay(wagonManager);
 
