@@ -77,4 +77,17 @@ class URLLocationTest {
 
         assertEquals(testStr, new String(buffer, "US-ASCII"));
     }
+
+    @Test
+    void shouldUseDefaultTempFileSpecificationsWhenNull() throws Exception {
+        File f = Files.createTempFile("url-location.", ".test").toFile();
+        f.deleteOnExit();
+
+        URL url = f.toURL();
+
+        URLLocation location = new URLLocation(url, f.getAbsolutePath(), null, null, true);
+
+        assertNotNull(location.getFile());
+        assertNotEquals(f, location.getFile());
+    }
 }
