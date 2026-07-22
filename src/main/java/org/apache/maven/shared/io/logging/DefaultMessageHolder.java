@@ -20,9 +20,9 @@ package org.apache.maven.shared.io.logging;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Default Message Holder.
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class DefaultMessageHolder implements MessageHolder {
 
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages = new CopyOnWriteArrayList<>();
 
     private Message currentMessage;
 
