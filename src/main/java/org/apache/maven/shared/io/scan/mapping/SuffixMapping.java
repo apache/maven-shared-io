@@ -56,6 +56,10 @@ public final class SuffixMapping implements SourceMapping {
     public Set<File> getTargetFiles(File targetDir, String source) {
         Set<File> targetFiles = new HashSet<>();
 
+        if (source == null || sourceSuffix == null) {
+            return targetFiles;
+        }
+
         if (source.endsWith(sourceSuffix)) {
             String base = source.substring(0, source.length() - sourceSuffix.length());
 

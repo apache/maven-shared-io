@@ -98,6 +98,30 @@ class SuffixMappingTest {
     }
 
     @Test
+    void shouldReturnNoTargetFilesWhenSourceIsNull() throws Exception {
+        File basedir = new File(".");
+
+        SuffixMapping mapping = new SuffixMapping(".java", ".class");
+
+        Set<File> results = mapping.getTargetFiles(basedir, null);
+
+        assertTrue(results.isEmpty(), "Returned wrong number of target files.");
+    }
+
+    @Test
+    void shouldReturnNoTargetFilesWhenSourceSuffixIsNull() throws Exception {
+        String base = "path/to/file";
+
+        File basedir = new File(".");
+
+        SuffixMapping mapping = new SuffixMapping(null, ".class");
+
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".java");
+
+        assertTrue(results.isEmpty(), "Returned wrong number of target files.");
+    }
+
+    @Test
     void singleTargetMapper() throws Exception {
         String base = "path/to/file";
 
@@ -112,5 +136,29 @@ class SuffixMappingTest {
         results = mapping.getTargetFiles(basedir, base + ".cs");
 
         assertEquals(1, results.size());
+    }
+
+    @Test
+    void singleTargetMapperShouldReturnNoTargetFilesWhenSourceIsNull() throws Exception {
+        File basedir = new File("target/");
+
+        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "/foo");
+
+        Set<File> results = mapping.getTargetFiles(basedir, null);
+
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    void singleTargetMapperShouldReturnNoTargetFilesWhenSourceSuffixIsNull() throws Exception {
+        String base = "path/to/file";
+
+        File basedir = new File("target/");
+
+        SingleTargetMapping mapping = new SingleTargetMapping(null, "/foo");
+
+        Set<File> results = mapping.getTargetFiles(basedir, base + ".cs");
+
+        assertTrue(results.isEmpty());
     }
 }
