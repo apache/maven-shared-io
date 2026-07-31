@@ -19,6 +19,7 @@
 package org.apache.maven.shared.io.location;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -55,10 +56,7 @@ public class ArtifactLocatorStrategy implements LocatorStrategy {
             ArtifactResolver resolver,
             ArtifactRepository localRepository,
             List<ArtifactRepository> remoteRepositories) {
-        this.factory = factory;
-        this.resolver = resolver;
-        this.localRepository = localRepository;
-        this.remoteRepositories = remoteRepositories;
+        this(factory, resolver, localRepository, remoteRepositories, "jar", null);
     }
 
     /**
@@ -74,11 +72,7 @@ public class ArtifactLocatorStrategy implements LocatorStrategy {
             ArtifactRepository localRepository,
             List<ArtifactRepository> remoteRepositories,
             String defaultArtifactType) {
-        this.factory = factory;
-        this.resolver = resolver;
-        this.localRepository = localRepository;
-        this.remoteRepositories = remoteRepositories;
-        this.defaultArtifactType = defaultArtifactType;
+        this(factory, resolver, localRepository, remoteRepositories, defaultArtifactType, null);
     }
 
     /**
@@ -96,9 +90,9 @@ public class ArtifactLocatorStrategy implements LocatorStrategy {
             List<ArtifactRepository> remoteRepositories,
             String defaultArtifactType,
             String defaultClassifier) {
-        this.factory = factory;
-        this.resolver = resolver;
-        this.localRepository = localRepository;
+        this.factory = Objects.requireNonNull(factory, "factory");
+        this.resolver = Objects.requireNonNull(resolver, "resolver");
+        this.localRepository = Objects.requireNonNull(localRepository, "localRepository");
         this.remoteRepositories = remoteRepositories;
         this.defaultArtifactType = defaultArtifactType;
         this.defaultClassifier = defaultClassifier;
