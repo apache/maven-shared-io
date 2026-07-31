@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class URLLocationTest {
 
@@ -76,5 +77,20 @@ class URLLocationTest {
         assertEquals(testStr.length(), read);
 
         assertEquals(testStr, new String(buffer, "US-ASCII"));
+    }
+
+    @Test
+    void shouldHandleNullTempFilePrefixAndSuffix() throws Exception {
+        File f = Files.createTempFile("url-location.", ".test").toFile();
+        f.deleteOnExit();
+
+        URL url = f.toURL();
+
+        URLLocation location = new URLLocation(url, f.getAbsolutePath(), null, null, true);
+
+        location.open();
+
+        assertNotNull(location.getFile());
+        assertTrue(location.getFile().exists());
     }
 }
