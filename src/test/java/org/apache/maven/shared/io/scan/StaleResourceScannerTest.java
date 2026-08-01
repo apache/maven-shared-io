@@ -19,10 +19,13 @@
 package org.apache.maven.shared.io.scan;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Set;
 
 import org.apache.maven.shared.io.scan.mapping.SourceMapping;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class StaleResourceScannerTest {
 
@@ -30,13 +33,18 @@ class StaleResourceScannerTest {
     void shouldNotNpeWhenGetTargetFilesReturnsNull() throws Exception {
         StaleResourceScanner scanner = new StaleResourceScanner();
         scanner.addSourceMapping(new SourceMapping() {
+            @Override
             public Set<File> getTargetFiles(File targetDir, String source) {
                 return null;
             }
         });
 
-        File sourceDir = new File("src/test");
-        File targetDir = new File("target");
-        scanner.getIncludedSources(sourceDir, targetDir);
+        File baseDir = new File("target");
+        baseDir.mkdirs();
+        File sourceDir = Files.createTempDirectory(baseDir.toPath(), "stale-scanner-src-").toFile();
+        File targetDir = Files.createTempDirectory(baseDir.toPath(), "stale-scanner-tgt-").toFile();
+        Files.createTempFile(sourceDir.toPath(), "source", ".txt");
+
+        assertDoesNotThrow(() -> scanner.getIncludedSources(sourceDir, targetDir));
     }
 }
