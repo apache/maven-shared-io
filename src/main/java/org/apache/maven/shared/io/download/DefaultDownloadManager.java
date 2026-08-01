@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.shared.io.logging.MessageHolder;
 import org.apache.maven.wagon.ConnectionException;
@@ -57,32 +58,157 @@ public class DefaultDownloadManager implements DownloadManager {
     private Map<String, File> cache = new ConcurrentHashMap<>();
 
     /**
+     * Shared parent of all download directories. One JVM shutdown hook deletes it.
+     */
+    private static File downloadRoot;
+
+    /**
+     * Whether the shutdown hook registration was already attempted. Keeps it to one hook.
+     */
+    private static boolean shutdownHookAttempted;
+
+    /**
+     * Number of shutdown hooks registered.
+     */
+    private static int registeredShutdownHooks;
+
+    /**
+     * @return how many JVM shutdown hooks this class registered.
+     */
+    static synchronized int registeredShutdownHooks() {
+        return registeredShutdownHooks;
+    }
+
+    /**
+     * This manager's own download directory, so {@link #cleanup()} only deletes its own files.
+     */
+    private File downloadDirectory;
+
+    /**
      * Create an instance of the {@code DefaultDownloadManager}.
      */
-    public DefaultDownloadManager() {
-        registerShutdownHook();
-    }
+    public DefaultDownloadManager() {}
 
     /**
      * @param wagonManager {@link org.apache.maven.repository.legacy.WagonManager}
      */
     public DefaultDownloadManager(WagonManager wagonManager) {
         this.wagonManager = wagonManager;
-        registerShutdownHook();
     }
 
     /**
-     * Registers a single JVM shutdown hook per manager instance that deletes all
-     * cached temporary download files at JVM exit. This avoids the memory leak
-     * caused by {@code File.deleteOnExit()}, which accumulates entries in the
-     * JVM-wide {@code DeleteOnExitHook} static set on every download invocation.
+     * Deletes the temporary files downloaded through this manager and empties its cache, so that
+     * subsequent requests download again. Calling this is optional: the files are removed when the
+     * JVM exits anyway. It is worth calling in a long-lived JVM, such as a Maven daemon or an
+     * embedded build, once the downloaded files are no longer needed. Do not call it while a
+     * download is in progress on another thread, as that download writes into the directory being
+     * removed.
      */
-    private void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (File file : cache.values()) {
-                file.delete();
-            }
-        }));
+    public void cleanup() {
+        cache.clear();
+
+        File directory;
+        synchronized (this) {
+            directory = downloadDirectory;
+            downloadDirectory = null;
+        }
+
+        if (directory != null) {
+            FileUtils.deleteQuietly(directory);
+        }
+    }
+
+    /**
+     * @return the directory of this manager, creating it, the shared root and the shutdown hook that
+     *         removes the root on first use.
+     * @throws IOException if the directory cannot be created.
+     */
+    private synchronized File downloadDirectory() throws IOException {
+        if (downloadDirectory == null || !downloadDirectory.isDirectory()) {
+            downloadDirectory = Files.createTempDirectory(downloadRoot().toPath(), "manager-")
+                    .toFile();
+        }
+
+        return downloadDirectory;
+    }
+
+    private static synchronized File downloadRoot() throws IOException {
+        // Recreate the root if something else deleted it, such as a temp dir sweeper.
+        if (downloadRoot == null || !downloadRoot.isDirectory()) {
+            downloadRoot =
+                    Files.createTempDirectory("maven-shared-io-downloads-").toFile();
+            registerShutdownHook();
+        }
+
+        return downloadRoot;
+    }
+
+    /**
+     * Registers, at most once, the hook that removes {@link #downloadRoot} at JVM exit. Registering
+     * one hook for the lifetime of the class, instead of one per root, is what keeps the JVM's hook
+     * set from growing: a root that a temp dir sweeper removes is replaced without a second hook.
+     */
+    private static void registerShutdownHook() {
+        if (shutdownHookAttempted) {
+            return;
+        }
+
+        // Set before the attempt, so a failure is not retried on every recreation of the root.
+        shutdownHookAttempted = true;
+
+        preloadDeleteClasses();
+
+        Thread hook = new Thread(DefaultDownloadManager::deleteDownloadRoot, "maven-shared-io-download-cleanup");
+
+        // The hook lives until JVM exit, so give it as few references as possible. The inherited
+        // context class loader is a plugin class realm in Maven and would be kept alive for the
+        // whole run of a long-lived JVM.
+        hook.setContextClassLoader(null);
+
+        try {
+            Runtime.getRuntime().addShutdownHook(hook);
+            registeredShutdownHooks++;
+        } catch (IllegalStateException e) {
+            // Already shutting down, so no hook can be added. Leave the files to the OS temp cleanup.
+        } catch (SecurityException e) {
+            // Not allowed to register a hook. Downloading must still work, so fall back to the
+            // operating system's temp directory cleanup, as above.
+        }
+    }
+
+    /**
+     * Deletes a throwaway directory tree so the classes {@link #deleteDownloadRoot()} needs are
+     * loaded up front. At JVM exit the class loader may be closed, {@link FileUtils} would fail to
+     * load and the hook would delete nothing.
+     * Called while holding the class lock, so {@link #downloadRoot} is the root just created.
+     */
+    private static void preloadDeleteClasses() {
+        File warmUp = new File(downloadRoot, ".warm-up");
+
+        try {
+            Files.createDirectories(warmUp.toPath().resolve("nested"));
+            Files.createFile(warmUp.toPath().resolve("nested/file"));
+        } catch (IOException e) {
+            // Nothing to walk, so fewer classes load. The hook is no worse off.
+        }
+
+        FileUtils.deleteQuietly(warmUp);
+    }
+
+    /**
+     * Deletes the current download root, ignoring failures. Called only by the shutdown hook.
+     * The lock only reads {@link #downloadRoot}; the deletion itself need not be exclusive, because
+     * a concurrent {@link #cleanup()} also uses {@link FileUtils#deleteQuietly(File)}.
+     */
+    private static void deleteDownloadRoot() {
+        File root;
+        synchronized (DefaultDownloadManager.class) {
+            root = downloadRoot;
+        }
+
+        if (root != null) {
+            FileUtils.deleteQuietly(root);
+        }
     }
 
     /** {@inheritDoc} */
@@ -93,7 +219,7 @@ public class DefaultDownloadManager implements DownloadManager {
     /** {@inheritDoc} */
     public File download(String url, List<TransferListener> transferListeners, MessageHolder messageHolder)
             throws DownloadFailedException {
-        File downloaded = (File) cache.get(url);
+        File downloaded = cache.get(url);
 
         if (downloaded != null && downloaded.exists()) {
             messageHolder.addMessage("Using cached download: " + downloaded.getAbsolutePath());
@@ -120,8 +246,10 @@ public class DefaultDownloadManager implements DownloadManager {
         messageHolder.addMessage("Using wagon: " + wagon + " to download: " + url);
 
         try {
-            // create the landing file in /tmp for the downloaded source archive
-            downloaded = Files.createTempFile("download-", null).toFile();
+            // create the landing file for the downloaded source archive, in the temp directory that
+            // is removed as a whole at JVM exit, so no per-file exit hook is needed.
+            downloaded = Files.createTempFile(downloadDirectory().toPath(), "download-", null)
+                    .toFile();
         } catch (IOException e) {
             throw new DownloadFailedException(url, "Failed to create temporary file target for download.", e);
         }
@@ -153,7 +281,7 @@ public class DefaultDownloadManager implements DownloadManager {
 
         messageHolder.addMessage("Connecting to: " + repo.getHost() + "(baseUrl: " + repo.getUrl() + ")");
 
-        boolean success = false;
+        boolean retainTempFile = false;
         boolean connected = false;
         try {
             wagon.connect(
@@ -167,9 +295,21 @@ public class DefaultDownloadManager implements DownloadManager {
             wagon.get(remotePath, downloaded);
 
             // cache this for later download requests to the same instance...
-            cache.put(url, downloaded);
+            File cached = cache.putIfAbsent(url, downloaded);
 
-            success = true;
+            if (cached != null && cached.exists()) {
+                // Another thread cached this URL first. Return its file, which callers may already
+                // be using, and let the finally block delete this copy.
+                return cached;
+            }
+
+            if (cached != null) {
+                // The cached file is gone, so replace the entry with this one. Losing this race is
+                // harmless: either file is valid and both are deleted with the temp directory.
+                cache.replace(url, cached, downloaded);
+            }
+
+            retainTempFile = true;
             return downloaded;
         } catch (ConnectionException e) {
             throw new DownloadFailedException(url, "Download failed", e);
@@ -182,23 +322,26 @@ public class DefaultDownloadManager implements DownloadManager {
         } catch (AuthorizationException e) {
             throw new DownloadFailedException(url, "Download failed", e);
         } finally {
-            // On failure, delete the temp file immediately to avoid leaving orphaned files.
-            // Successfully downloaded files are cleaned up by the shutdown hook registered
-            // in registerShutdownHook().
-            if (!success && downloaded != null) {
+            // Delete the temp file unless the cache now holds it. Covers a failed download and a
+            // lost race to cache the same URL.
+            if (!retainTempFile) {
                 downloaded.delete();
             }
 
-            // ensure the Wagon instance is closed out properly (only if connect succeeded)
-            if (wagon != null && connected) {
-                try {
-                    messageHolder.addMessage("Disconnecting.");
+            if (wagon != null) {
+                // Only disconnect if the connection was actually established.
+                if (connected) {
+                    try {
+                        messageHolder.addMessage("Disconnecting.");
 
-                    wagon.disconnect();
-                } catch (ConnectionException e) {
-                    messageHolder.addMessage("Failed to disconnect wagon for: " + url, e);
+                        wagon.disconnect();
+                    } catch (ConnectionException e) {
+                        messageHolder.addMessage("Failed to disconnect wagon for: " + url, e);
+                    }
                 }
 
+                // Listeners are added before connecting, so remove them even if connecting failed.
+                // Otherwise they stay attached to a Wagon that may be reused.
                 for (Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); ) {
                     wagon.removeTransferListener(it.next());
                 }
