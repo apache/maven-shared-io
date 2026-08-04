@@ -31,7 +31,7 @@ class SingleTargetMappingTest {
 
     @Test
     void testGetTargetFilesShouldReturnEmptySetWhenSuffixDoesNotMatch() throws Exception {
-        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "/foo");
+        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "foo");
         File basedir = new File("target/");
 
         Set<File> results = mapping.getTargetFiles(basedir, "path/to/file.apt");
@@ -41,13 +41,13 @@ class SingleTargetMappingTest {
 
     @Test
     void testGetTargetFilesShouldReturnCorrectFileWhenSuffixMatches() throws Exception {
-        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "/foo");
+        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "foo");
         File basedir = new File("target/");
 
         Set<File> results = mapping.getTargetFiles(basedir, "path/to/file.cs");
 
         assertEquals(1, results.size());
-        assertEquals(new File(basedir, "/foo"), results.iterator().next());
+        assertEquals(new File(basedir, "foo"), results.iterator().next());
     }
 
     @Test
