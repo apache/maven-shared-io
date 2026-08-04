@@ -116,7 +116,18 @@ public class DefaultDownloadManager implements DownloadManager {
 
         // split the download URL into base URL and remote path for connecting, then retrieving.
         String remotePath = sourceUrl.getPath();
-        String baseUrl = url.substring(0, url.length() - remotePath.length());
+        String authority = sourceUrl.getAuthority();
+
+        // Repository derives host and port by re-parsing this URL, and tolerates a missing
+        // authority only for file: URLs. Fail fast instead of letting its parser guess.
+        if ((authority == null || authority.isEmpty()) && !"file".equalsIgnoreCase(sourceUrl.getProtocol())) {
+            throw new DownloadFailedException(
+                    url, "Download failed due to URL without an authority component (expected protocol://host/path).");
+        }
+
+        // Assemble from components instead of substring(url), which lets a query string or fragment leak in.
+        // Authority is copied verbatim so port and bracketed IPv6 host survive.
+        String baseUrl = sourceUrl.getProtocol() + ":" + (authority != null ? "//" + authority : "");
 
         for (Iterator<TransferListener> it = transferListeners.iterator(); it.hasNext(); ) {
             wagon.addTransferListener(it.next());

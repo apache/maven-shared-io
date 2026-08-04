@@ -42,14 +42,17 @@ import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
+import org.easymock.Capture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.newCapture;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -316,6 +319,157 @@ class DefaultDownloadManagerTest {
         assertTrue(mh.render().contains("ConnectionException"));
 
         verify(wagon, wagonManager);
+    }
+
+    @Test
+    void shouldUseCorrectBaseUrlWhenUrlHasQueryString() throws Exception {
+        String urlWithQuery = "http://example.com/path/file.jar?token=abc";
+
+        Capture<Repository> repoCapture = newCapture();
+
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(anyString(), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        downloadManager.download(urlWithQuery, new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        assertEquals("http://example.com", repoCapture.getValue().getUrl());
+    }
+
+    @Test
+    void shouldUseCorrectBaseUrlWhenUrlHasFragment() throws Exception {
+        String urlWithFragment = "http://example.com/path/file.jar#section";
+
+        Capture<Repository> repoCapture = newCapture();
+
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(anyString(), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        downloadManager.download(urlWithFragment, new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        assertEquals("http://example.com", repoCapture.getValue().getUrl());
+    }
+
+    @Test
+    void shouldPreserveUserInfoAndPortInBaseUrl() throws Exception {
+        String urlWithCredentials = "http://user:secret@example.com:8080/path/file.jar?token=abc";
+
+        Capture<Repository> repoCapture = newCapture();
+        Capture<String> pathCapture = newCapture();
+
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(capture(pathCapture), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        downloadManager.download(urlWithCredentials, new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        Repository repo = repoCapture.getValue();
+        assertEquals("example.com", repo.getHost());
+        assertEquals(8080, repo.getPort());
+        assertEquals("user", repo.getUsername());
+        assertEquals("secret", repo.getPassword());
+        // Repository strips the credentials from the URL once it has parsed them out.
+        assertEquals("http://example.com:8080", repo.getUrl());
+        assertEquals("/path/file.jar", pathCapture.getValue());
+    }
+
+    @Test
+    void shouldPreserveBracketedIpv6HostAndPortInBaseUrl() throws Exception {
+        String ipv6Url = "http://[::1]:8081/path/file.jar#section";
+
+        Capture<Repository> repoCapture = newCapture();
+        Capture<String> pathCapture = newCapture();
+
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(capture(pathCapture), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+        downloadManager.download(ipv6Url, new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        Repository repo = repoCapture.getValue();
+        assertEquals("::1", repo.getHost());
+        assertEquals(8081, repo.getPort());
+        assertEquals("http://[::1]:8081", repo.getUrl());
+        assertEquals("/path/file.jar", pathCapture.getValue());
+    }
+
+    @Test
+    void shouldFailToDownloadNonFileUrlWithoutAuthority() throws Exception {
+        // The wagon is resolved before the base URL is built, so this gets past the protocol check.
+        expect(wagonManager.getWagon("http")).andReturn(wagon);
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+
+        try {
+            downloadManager.download("http:/path/file.jar", new DefaultMessageHolder());
+
+            fail("Should not download a URL without an authority component.");
+        } catch (DownloadFailedException e) {
+            assertTrue(e.getMessage().contains("without an authority component"));
+        }
+
+        verify(wagon, wagonManager);
+    }
+
+    @Test
+    void shouldDownloadFileUrlWithoutAuthority() throws Exception {
+        File tempFile = Files.createTempFile("download-source", "test").toFile();
+        tempFile.deleteOnExit();
+
+        Capture<Repository> repoCapture = newCapture();
+
+        expect(wagonManager.getWagon("file")).andReturn(wagon);
+        expect(wagonManager.getAuthenticationInfo(anyString())).andReturn(null);
+        expect(wagonManager.getProxy(anyString())).andReturn(null);
+        wagon.connect(capture(repoCapture), anyObject(AuthenticationInfo.class), anyObject(ProxyInfo.class));
+        wagon.get(anyString(), anyObject(File.class));
+        wagon.disconnect();
+
+        replay(wagon, wagonManager);
+
+        DownloadManager downloadManager = new DefaultDownloadManager(wagonManager);
+
+        // File URLs have no authority (file:/tmp/...); wagon resolves these against localhost.
+        downloadManager.download("file:" + tempFile.getAbsolutePath(), new DefaultMessageHolder());
+
+        verify(wagon, wagonManager);
+
+        assertEquals("file:", repoCapture.getValue().getUrl());
     }
 
     @Test
