@@ -93,6 +93,10 @@ public class StaleResourceScanner extends AbstractResourceInclusionScanner {
             for (SourceMapping mapping : srcMappings) {
                 Set<File> targetFiles = mapping.getTargetFiles(targetDir, path);
 
+                if (targetFiles == null) {
+                    continue;
+                }
+
                 // never include files that don't have corresponding target mappings.
                 // the targets don't have to exist on the filesystem, but the
                 // mappers must tell us to look for them.
