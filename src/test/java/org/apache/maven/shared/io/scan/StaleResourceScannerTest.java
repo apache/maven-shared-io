@@ -41,8 +41,10 @@ class StaleResourceScannerTest {
 
         File baseDir = new File("target");
         baseDir.mkdirs();
-        File sourceDir = Files.createTempDirectory(baseDir.toPath(), "stale-scanner-src-").toFile();
-        File targetDir = Files.createTempDirectory(baseDir.toPath(), "stale-scanner-tgt-").toFile();
+        File sourceDir = Files.createTempDirectory(baseDir.toPath(), "stale-scanner-src-")
+                .toFile();
+        File targetDir = Files.createTempDirectory(baseDir.toPath(), "stale-scanner-tgt-")
+                .toFile();
         Files.createTempFile(sourceDir.toPath(), "source", ".txt");
 
         assertDoesNotThrow(() -> scanner.getIncludedSources(sourceDir, targetDir));
