@@ -23,95 +23,51 @@ under the License.
   <properties>
     <title>Download ${project.name} Source</title>
   </properties>
+
   <body>
     <section name="Download ${project.name} ${project.version} Source">
 
-      <p>${project.name} ${project.version} distributes source code. Use a source archive if you want to build ${project.name}. Otherwise, use binary artifacts from the central repository.</p>
+      <p><strong>${project.name} ${project.version}</strong> is distributed in source format.</p>
 
-      <p>The system prompts for a mirror. If the file does not exist on your mirror, wait. Mirrors take up to 24 hours to update.</p>
+      <p>Use a source archive if you intend to build <strong>${project.name}</strong> yourself.</p>
 
-      <p>To guard against corrupted downloads or installations, verify the signature of release bundles. Use the public KEYS that Apache Maven developers provide.</p>
+      <p>Otherwise, simply use the ready-made binary artifacts from <strong>central repository</strong>.</p>
 
-      <p>${project.name} uses the Apache License, version 2.0.</p>
+      <p><strong>${project.name}</strong> is distributed under the <a href="https://www.apache.org/licenses/">Apache License, version 2.0</a>.</p>
 
-      <p>We encourage users to configure a Maven repository mirror. Choose a mirror close to your location. Read the guide about mirror settings for repositories.</p>
+      <subsection name="Files">
 
-      <a name="mirror"/>
-      <subsection name="Mirror">
+        <p>This is the current stable version of <strong>${project.name}</strong>.</p>
 
-        <p>
-          [if-any logo]
-          <a href="[link]">
-            <img align="right" src="[logo]" border="0"
-                 alt="logo"/>
-          </a>
-          [end]
-          The current mirror is
-          <b>[preferred]</b>.
-          If you face a problem with this mirror,
-          choose another mirror.
-          If all mirrors fail, use
-          <i>backup</i>
-          mirrors at the end of the list.
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Link</th>
+              <th>Checksum</th>
+              <th>Signature</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${project.name} ${project.version} (Source zip)</td>
+              <td><a href="https://dlcdn.apache.org/maven/shared/${project.artifactId}-${project.version}-source-release.zip">${project.artifactId}-${project.version}-source-release.zip</a></td>
+              <td><a href="https://downloads.apache.org/maven/shared/${project.artifactId}-${project.version}-source-release.zip.sha512">${project.artifactId}-${project.version}-source-release.zip.sha512</a></td>
+              <td><a href="https://downloads.apache.org/maven/shared/${project.artifactId}-${project.version}-source-release.zip.asc">${project.artifactId}-${project.version}-source-release.zip.asc</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>It is essential that you <a href="https://www.apache.org/info/verification.html">verify the integrity</a> of the downloaded file
+          using the checksum (.sha512 file)
+          or using the signature (.asc file) against the public <a href="https://downloads.apache.org/maven/KEYS">KEYS</a> used by the Apache Maven developers.
         </p>
 
-        <form action="[location]" method="get" id="SelectMirror">
-          Other mirrors:
-          <select name="Preferred">
-            [if-any http]
-            [for http]
-            <option value="[http]">[http]</option>
-            [end]
-            [end]
-            [if-any ftp]
-            [for ftp]
-            <option value="[ftp]">[ftp]</option>
-            [end]
-            [end]
-            [if-any backup]
-            [for backup]
-            <option value="[backup]">[backup] (backup)</option>
-            [end]
-            [end]
-          </select>
-          <input type="submit" value="Change"/>
-        </form>
-
-        <p>
-          You can read the
-          <a href="http://www.apache.org/mirrors/">complete mirror list.</a>
-        </p>
-
-      </subsection>
-      
-      <subsection name="${project.name} ${project.version}">
-        
-      <p>This is the current stable version of ${project.name}.</p>
-        
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Link</th>
-            <th>Checksum</th>
-            <th>Signature</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>${project.name} ${project.version} (Source zip)</td>
-            <td><a href="[preferred]maven/shared/${project.artifactId}-${project.version}-source-release.zip">maven/shared/${project.artifactId}-${project.version}-source-release.zip</a></td>
-            <td><a href="https://www.apache.org/dist/maven/shared/${project.artifactId}-${project.version}-source-release.zip.sha512">maven/shared/${project.artifactId}-${project.version}-source-release.zip.sha512</a></td>
-            <td><a href="https://www.apache.org/dist/maven/shared/${project.artifactId}-${project.version}-source-release.zip.asc">maven/shared/${project.artifactId}-${project.version}-source-release.zip.asc</a></td>
-          </tr>
-        </tbody>
-      </table>
       </subsection>
 
       <subsection name="Previous Versions">
-        
-      <p>Older releases exist on the archive site. These releases are not recommended.</p>
-
+        <p>It is strongly recommended to use the latest release version of <strong>${project.name}</strong> to take advantage of the newest features and bug fixes.</p>
+        <p>Older non-recommended releases can be found on our <a href="https://archive.apache.org/dist/maven/shared/">archive site</a>.</p>
       </subsection>
     </section>
   </body>
