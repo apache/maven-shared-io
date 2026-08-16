@@ -88,10 +88,13 @@
       <version>${mavenVersion}</version>
       <scope>provided</scope>
     </dependency>
+    <!-- Only the download package needs Wagon, and that package is unusable without the provided maven-compat
+         above anyway. Optional, so that consumers of the location, logging and scan packages do not inherit it. -->
     <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-api</artifactId>
       <version>3.5.3</version>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>

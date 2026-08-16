@@ -26,7 +26,11 @@ import org.apache.maven.wagon.events.TransferListener;
 
 /**
  * The Download Manager interface.
- *
+ * <p>
+ * This is the one part of maven-shared-io built on Wagon, and both of the artifacts it needs at runtime -
+ * {@code org.apache.maven.wagon:wagon-provider-api} and {@code org.apache.maven:maven-compat}, for the
+ * {@code WagonManager} that supplies providers, proxies and credentials - have to be declared by the consumer. Neither
+ * arrives transitively with maven-shared-io.
  */
 public interface DownloadManager {
     /**
