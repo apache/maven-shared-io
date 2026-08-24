@@ -54,10 +54,23 @@ public class ClasspathResourceLocatorStrategy implements LocatorStrategy {
     /** {@inheritDoc} */
     public Location resolve(String locationSpecification, MessageHolder messageHolder) {
         ClassLoader cloader = Thread.currentThread().getContextClassLoader();
-
-        URL resource = cloader.getResource(locationSpecification);
+        if (cloader == null) {
+            cloader = ClasspathResourceLocatorStrategy.class.getClassLoader();
+        }
+        if (cloader == null) {
+            cloader = ClassLoader.getSystemClassLoader();
+        }
 
         Location location = null;
+
+        if (cloader == null) {
+            messageHolder.addMessage(
+                    "Failed to resolve classpath resource: " + locationSpecification
+                            + " (no ClassLoader available)");
+            return location;
+        }
+
+        URL resource = cloader.getResource(locationSpecification);
 
         if (resource != null) {
             location = new URLLocation(
