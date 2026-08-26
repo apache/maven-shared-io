@@ -113,4 +113,16 @@ class SuffixMappingTest {
 
         assertEquals(1, results.size());
     }
+
+    @Test
+    void shouldReturnEmptySetWhenSourceIsNull() throws Exception {
+        SuffixMapping mapping = new SuffixMapping(".java", ".class");
+        assertTrue(mapping.getTargetFiles(new File("."), null).isEmpty());
+    }
+
+    @Test
+    void singleTargetReturnsEmptyWhenSourceIsNull() throws Exception {
+        SingleTargetMapping mapping = new SingleTargetMapping(".cs", "/foo");
+        assertTrue(mapping.getTargetFiles(new File("."), null).isEmpty());
+    }
 }
