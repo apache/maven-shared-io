@@ -14,70 +14,31 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-Contributing to [Apache Maven Shared IO](https://maven.apache.org/shared/maven-shared-io/)
+Apache Maven Shared I/O API (RETIRED)
 ======================
 
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)][license]
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven.shared/maven-shared-io.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.apache.maven.shared/maven-shared-io)
-[![Jenkins Status](https://img.shields.io/jenkins/s/https/ci-maven.apache.org/job/Maven/job/maven-box/job/maven-shared-io/job/master.svg)][build]
-[![Jenkins tests](https://img.shields.io/jenkins/t/https/ci-maven.apache.org/job/Maven/job/maven-box/job/maven-shared-io/job/master.svg)][test-results]
 
+This component is retired. It is no longer maintained and this repository is
+read only.
 
-You have found a bug, or you have an idea for a cool new feature? Contributing
-code is a great way to give something back to the open source community. Before
-you dig right into the code, there are a few guidelines that we need
-contributors to follow so that we can have a chance of keeping on top of
-things.
+The Apache Maven project voted to retire [Maven Shared I/O API][site] in
+September 2026, because it had no remaining consumers and its download package
+could not be carried to Maven 4 without breaking its published API. Version
+3.1.0 is the final release.
 
-Getting Started
----------------
+The [component site][site] stays published, and the released versions stay
+available from [Maven Central][central] and from
+[archive.apache.org](https://archive.apache.org/dist/maven/shared/).
 
-+ Make sure you have a [GitHub account](https://github.com/signup/free).
-+ If you're planning to implement a new feature, it makes sense to discuss your changes 
-  on the [dev list][ml-list] first. 
-  This way you can make sure you're not wasting your time on something that isn't 
-  considered to be in Apache Maven's scope.
-+ Submit a ticket for your issue, assuming one does not already exist.
-  + Clearly describe the issue, including steps to reproduce when it is a bug.
-  + Make sure you fill in the earliest version that you know has the issue.
-+ Fork the repository on GitHub.
+If you want to continue development, fork the code under your own groupId and
+artifactId. The `maven-` artifactId prefix is reserved for the Apache Maven
+project, so the fork needs a different name.
 
-Making and Submitting Changes
---------------
-
-We accept Pull Requests via GitHub. The [developer mailing list][ml-list] is the
-main channel of communication for contributors.  
-There are some guidelines which will make applying PRs easier for us:
-+ Create a topic branch from where you want to base your work (this is usually the master branch).
-  Push your changes to a topic branch in your fork of the repository.
-+ Make commits of logical units.
-+ Respect the original code style: by using the same [codestyle][code-style],
-  patches should only highlight the actual difference, not being disturbed by any formatting issues:
-  + Only use spaces for indentation.
-  + Create minimal diffs - disable on save actions like reformat source code or organize imports. 
-    If you feel the source code should be reformatted, create a separate PR for this change.
-  + Check for unnecessary whitespace with `git diff --check` before committing.
-+ Make sure you have added the necessary tests (JUnit/IT) for your changes.
-+ Run all the tests with `mvn -Prun-its verify` to assure nothing else was accidentally broken.
-+ Submit a pull request to the repository in the Apache organization.
-
-If you plan to contribute on a regular basis, please consider filing a [contributor license agreement][cla].
-
-Additional Resources
---------------------
-
-+ [Contributing patches](https://maven.apache.org/guides/development/guide-maven-development.html#Creating_and_submitting_a_patch)
-+ [Contributor License Agreement][cla]
-+ [General GitHub documentation](https://help.github.com/)
-+ [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
-+ [Apache Maven X Account](https://x.com/ASFMavenProject)
-+ [Apache Maven Bluesky Account](https://bsky.app/profile/maven.apache.org)
-+ [Apache Maven Mastodon Account](https://mastodon.social/deck/@ASFMavenProject@fosstodon.org)
+For questions, write to the [Maven mailing lists][ml-list].
 
 [license]: https://www.apache.org/licenses/LICENSE-2.0
 [ml-list]: https://maven.apache.org/mailing-lists.html
-[code-style]: https://maven.apache.org/developers/conventions/code.html
-[cla]: https://www.apache.org/licenses/#clas
-[maven-wiki]: https://cwiki.apache.org/confluence/display/MAVEN/Index
-[test-results]: https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-shared-io/job/master/lastCompletedBuild/testReport/
-[build]: https://ci-maven.apache.org/job/Maven/job/maven-box/job/maven-shared-io/job/master/
+[site]: https://maven.apache.org/shared/maven-shared-io/
+[central]: https://search.maven.org/artifact/org.apache.maven.shared/maven-shared-io

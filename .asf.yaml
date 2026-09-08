@@ -16,7 +16,7 @@
 #
 # see https://s.apache.org/asfyaml
 github:
-  description: "Apache Maven Shared IO"
+  description: "Apache Maven Shared IO (RETIRED)"
   homepage: https://maven.apache.org/shared/maven-shared-io/
   labels:
     - java
@@ -31,8 +31,6 @@ github:
     squash: true
     merge: false
     rebase: true
-  autolink_jira:
-    - MSHARED
   features:
     issues: true
 notifications:
