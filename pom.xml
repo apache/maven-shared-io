@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>maven-shared-io</artifactId>
-  <version>3.1.0-SNAPSHOT</version>
+  <version>3.1.0</version>
 
   <name>Apache Maven Shared I/O API (RETIRED)</name>
   <description>API for I/O support like logging, download or file scanning.</description>
@@ -43,7 +43,7 @@
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/maven-shared-io.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/maven-shared-io.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>maven-shared-io-3.1.0</tag>
     <url>https://github.com/apache/maven-shared-io/tree/${project.scm.tag}</url>
   </scm>
   <issueManagement>
@@ -65,7 +65,7 @@
     <mavenVersion>3.6.3</mavenVersion>
     <javaVersion>8</javaVersion>
     <checkstyle.violation.ignore>RedundantThrows,NewlineAtEndOfFile,ParameterNumber,MethodLength,FileLength,JavadocType</checkstyle.violation.ignore>
-    <project.build.outputTimestamp>2020-04-04T09:03:59Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-08T15:17:01Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
